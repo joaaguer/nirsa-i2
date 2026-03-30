@@ -1,0 +1,783 @@
+<html lang="es"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nirsa i2 — Red de Investigacion</title>
+<style>
+:root{--f:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--bg1:#fff;--bg2:#f5f4f0;--bg3:#eeece6;--tx1:#1a1a18;--tx2:#6b6a64;--tx3:#9c9a92;--bd1:rgba(0,0,0,0.1);--bd2:rgba(0,0,0,0.18);--rm:8px;--rl:12px}
+@media(prefers-color-scheme:dark){:root{--bg1:#1e1e1c;--bg2:#2a2a28;--bg3:#333331;--tx1:#e8e6de;--tx2:#9c9a92;--tx3:#6b6a64;--bd1:rgba(255,255,255,0.1);--bd2:rgba(255,255,255,0.18)}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);color:var(--tx1);background:var(--bg3);font-size:13px;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px}
+.app{border:0.5px solid var(--bd1);border-radius:var(--rl);overflow:hidden;width:100%;max-width:1140px;background:var(--bg1)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:0.5px solid var(--bd1);background:var(--bg1);gap:8px;flex-wrap:wrap}
+.brand{font-size:13px;font-weight:500}.brand span{color:var(--tx2);font-weight:400}
+.conf{font-size:10px;padding:2px 8px;border-radius:99px;background:#FCEBEB;color:#A32D2D;font-weight:500}
+.si{font-size:10px;color:var(--tx3)}
+.caso-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:0.5px solid var(--bd1);background:var(--bg2);flex-wrap:wrap}
+.ctabs{display:flex;gap:4px;flex:1;flex-wrap:wrap}
+.ctab{font-size:11px;padding:4px 12px;border-radius:99px;border:0.5px solid var(--bd2);background:var(--bg1);color:var(--tx2);cursor:pointer;white-space:nowrap;transition:all .12s}
+.ctab:hover{background:var(--bg2)}.ctab.on{background:#E6F1FB;color:#0C447C;border-color:#B5D4F4;font-weight:500}
+.cdel{font-size:10px;padding:3px 7px;border-radius:99px;border:0.5px solid #F7C1C1;background:#FCEBEB;color:#A32D2D;cursor:pointer}.cdel:hover{background:#F7C1C1}
+.stats{display:flex;gap:10px;padding:6px 14px;border-bottom:0.5px solid var(--bd1);background:var(--bg2);flex-wrap:wrap;align-items:center}
+.sn{font-size:15px;font-weight:500}.sl{font-size:10px;color:var(--tx2)}.vs{width:0.5px;height:14px;background:var(--bd1)}
+.toolbar{display:flex;gap:5px;padding:7px 14px;border-bottom:0.5px solid var(--bd1);background:var(--bg1);align-items:center;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:90px;font-size:12px;padding:4px 8px;border:0.5px solid var(--bd2);border-radius:var(--rm);background:var(--bg1);color:var(--tx1);outline:none}
+.toolbar input:focus{border-color:#378ADD}
+button{font-size:11px;padding:4px 9px;cursor:pointer;border-radius:var(--rm);border:0.5px solid var(--bd2);background:var(--bg1);color:var(--tx1);transition:background .12s;white-space:nowrap}
+button:hover{background:var(--bg2)}
+.bb{background:#E6F1FB;color:#0C447C;border-color:#B5D4F4}.bb:hover{background:#B5D4F4}
+.bp{background:#EEEDFE;color:#3C3489;border-color:#CECBF6}.bp:hover{background:#CECBF6}
+.bg{background:#EAF3DE;color:#27500A;border-color:#C0DD97}.bg:hover{background:#C0DD97}
+.bc{background:#FAECE7;color:#712B13;border-color:#F5C4B3}.bc:hover{background:#F5C4B3}
+.bt{background:#E1F5EE;color:#085041;border-color:#9FE1CB}.bt:hover{background:#9FE1CB}
+.br{background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1}.br:hover{background:#F7C1C1}
+.ba{background:#FAEEDA;color:#633806;border-color:#FAC775}.ba:hover{background:#FAC775}
+.bv{background:#e8f4fd;color:#0a3d5c;border-color:#90cef4;font-weight:500}.bv:hover{background:#90cef4}
+.body{display:flex;height:540px}
+.sidebar{width:190px;min-width:190px;border-right:0.5px solid var(--bd1);display:flex;flex-direction:column;background:var(--bg1)}
+.sbh{font-size:10px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;padding:7px 10px 5px;border-bottom:0.5px solid var(--bd1)}
+.sbf{display:flex;border-bottom:0.5px solid var(--bd1)}
+.sf{flex:1;padding:4px 2px;font-size:9px;cursor:pointer;text-align:center;color:var(--tx2);border-right:0.5px solid var(--bd1);transition:background .1s}
+.sf:last-child{border-right:none}.sf.on{background:var(--bg2);font-weight:500;color:var(--tx1)}
+.nl{flex:1;overflow-y:auto}
+.nr{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;border-bottom:0.5px solid var(--bd1);transition:background .1s}
+.nr:hover{background:var(--bg2)}.nr.on{background:#E6F1FB}
+.sf2{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid transparent}
+.si2{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.ni{flex:1;min-width:0}.nn{font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ns{font-size:9px;color:var(--tx2)}
+.rd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.esb{padding:20px 10px;text-align:center;color:var(--tx3);font-size:11px;line-height:1.7}
+.cw{flex:1;position:relative;overflow:hidden;background:var(--bg2)}
+canvas{display:block;width:100%;height:100%}
+.ecv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--tx3);pointer-events:none;font-size:12px;text-align:center;padding:20px}
+.noc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--tx3);font-size:13px;text-align:center;padding:30px;pointer-events:none}
+.det{width:190px;min-width:190px;border-left:0.5px solid var(--bd1);padding:10px;overflow-y:auto;background:var(--bg1);display:flex;flex-direction:column;gap:9px}
+.df{width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto;display:block;border:3px solid var(--bd2)}
+.di{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;margin:0 auto}
+.dl{font-size:9px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.cr{display:flex;align-items:center;gap:5px;padding:4px 0;border-bottom:0.5px solid var(--bd1)}
+.rp{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:500;white-space:nowrap}
+.leg{display:flex;flex-wrap:wrap;gap:4px 10px;padding:5px 14px;border-top:0.5px solid var(--bd1);background:var(--bg1);font-size:9px;color:var(--tx2);align-items:center}
+.li{display:flex;align-items:center;gap:3px}.ll{width:16px;height:2px}.ld{width:7px;height:7px;border-radius:50%}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,0.38);display:flex;align-items:center;justify-content:center;z-index:20}
+.mo{background:var(--bg1);border:0.5px solid var(--bd2);border-radius:var(--rl);padding:16px;width:320px;display:flex;flex-direction:column;gap:10px;max-height:92vh;overflow-y:auto}
+.mo h3{font-size:13px;font-weight:500}.mo label{font-size:10px;color:var(--tx2);display:block;margin-bottom:2px}
+.mo input,.mo select,.mo textarea{width:100%;font-size:12px;padding:5px 8px;border:0.5px solid var(--bd2);border-radius:var(--rm);background:var(--bg1);color:var(--tx1);outline:none}
+.mo input[type=file]{padding:3px}.mo textarea{resize:vertical;min-height:44px}
+.mo .hint{font-size:10px;color:var(--tx2);line-height:1.5;padding:5px 8px;background:var(--bg2);border-radius:var(--rm)}
+.mbt{display:flex;gap:6px;justify-content:flex-end;margin-top:2px}
+.ip{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--bd2);display:none;margin:0 auto}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg1);border:0.5px solid var(--bd2);border-radius:var(--rm);padding:8px 16px;font-size:12px;z-index:30;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 2px 12px rgba(0,0,0,.14)}
+.toast.show{opacity:1}
+.snap-info{font-size:10px;background:#E6F1FB;color:#0C447C;padding:4px 10px;border-radius:var(--rm);border:0.5px solid #B5D4F4;max-width:220px;text-align:center;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="3.5" stroke="#378ADD" stroke-width="1.5"></circle>
+      <circle cx="4" cy="4" r="2" fill="#378ADD"></circle><circle cx="18" cy="4" r="2" fill="#378ADD"></circle>
+      <circle cx="4" cy="18" r="2" fill="#378ADD"></circle><circle cx="18" cy="18" r="2" fill="#378ADD"></circle>
+      <line x1="6" y1="6" x2="8.5" y2="8.5" stroke="#378ADD" stroke-width="1"></line>
+      <line x1="16" y1="6" x2="13.5" y2="8.5" stroke="#378ADD" stroke-width="1"></line>
+      <line x1="6" y1="16" x2="8.5" y2="13.5" stroke="#378ADD" stroke-width="1"></line>
+      <line x1="16" y1="16" x2="13.5" y2="13.5" stroke="#378ADD" stroke-width="1"></line>
+    </svg>
+    <div class="brand">Nirsa i2 <span>— red de investigacion</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span class="si" id="sind"></span>
+    <button class="bv" onclick="publicarSnapshot()" title="Genera un .html listo para compartir con cualquier persona">💾 Publicar para compartir</button>
+    <div class="conf">CONFIDENCIAL</div>
+  </div>
+</div>
+
+<!-- BARRA CASOS -->
+<div class="caso-bar">
+  <span style="font-size:11px;font-weight:500;color:var(--tx2);white-space:nowrap">Caso activo:</span>
+  <div class="ctabs" id="ctabs">
+    <div style="display:inline-flex;align-items:center;gap:3px">
+      <div class="ctab on" onclick="selCaso('caso_1774842698680')">Prueba</div>
+      <div class="cdel" onclick="delCaso('caso_1774842698680',event)" title="Eliminar caso">x</div>
+    </div></div>
+  <button class="bb" onclick="nuevoCaso()">+ Nuevo caso</button>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="se">3</span><span class="sl">emp. Nirsa</span></div><div class="vs"></div>
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="sfin" style="color:#534AB7">0</span><span class="sl">fam. internos</span></div><div class="vs"></div>
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="sfex" style="color:#27500A">0</span><span class="sl">fam. externos</span></div><div class="vs"></div>
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="ss" style="color:#712B13">1</span><span class="sl">sospechosos</span></div><div class="vs"></div>
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="slnk">3</span><span class="sl">vinculos</span></div><div class="vs"></div>
+  <div style="display:flex;align-items:baseline;gap:3px"><span class="sn" id="shi" style="color:#E24B4A">1</span><span class="sl">riesgo alto</span></div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <input type="text" id="srch" placeholder="Buscar persona..." oninput="filtra(this.value)">
+  <button class="bb" onclick="om('emp')">+ Nirsa</button>
+  <button class="bp" onclick="om('fin')">+ F.Interno</button>
+  <button class="bg" onclick="om('fex')">+ F.Externo</button>
+  <button class="bc" onclick="om('ext')">+ Sospechoso</button>
+  <button class="bt" onclick="om('lnk')">+ Vinculo</button>
+  <button onclick="resetV()">Reset vista</button>
+</div>
+
+<!-- BODY -->
+<div class="body">
+  <div class="sidebar">
+    <div class="sbh">Personas (<span id="nc">4</span>)</div>
+    <div class="sbf">
+      <div class="sf on" id="fa" onclick="setF('all')">Todos</div>
+      <div class="sf" id="fe" onclick="setF('emp')">Nirsa</div>
+      <div class="sf" id="ff" onclick="setF('fin')">F.Int</div>
+      <div class="sf" id="fx" onclick="setF('fex')">F.Ext</div>
+      <div class="sf" id="fss" onclick="setF('ext')">Sosp.</div>
+    </div>
+    <div class="nl" id="nl"><div class="nr" onclick="selN(1)">
+      <div class="si2" style="background:#E6F1FB;color:#0C447C;border:2px solid #378ADD">CA</div>
+      <div class="ni"><div class="nn">Carlos Arana</div><div class="ns">Empleado Nirsa</div></div>
+      <div class="rd" style="background:#639922"></div>
+    </div><div class="nr" onclick="selN(2)">
+      <div class="si2" style="background:#E6F1FB;color:#0C447C;border:2px solid #378ADD">LF</div>
+      <div class="ni"><div class="nn">Laude Fernandez</div><div class="ns">Empleado Nirsa</div></div>
+      <div class="rd" style="background:#639922"></div>
+    </div><div class="nr" onclick="selN(3)">
+      <div class="si2" style="background:#FAECE7;color:#712B13;border:2px solid #D85A30">JG</div>
+      <div class="ni"><div class="nn">Joaquin Guerra</div><div class="ns">Sospechoso</div></div>
+      <div class="rd" style="background:#E24B4A"></div>
+    </div><div class="nr" onclick="selN(4)">
+      <div class="si2" style="background:#E6F1FB;color:#0C447C;border:2px solid #378ADD">DG</div>
+      <div class="ni"><div class="nn">Dylan G</div><div class="ns">Empleado Nirsa</div></div>
+      <div class="rd" style="background:#EF9F27"></div>
+    </div></div>
+  </div>
+
+  <div class="cw" id="cw">
+    <canvas id="cv" width="758" height="540" style="width: 758px; height: 540px;"></canvas>
+    <div class="ecv" id="ecv" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" opacity=".3">
+        <circle cx="24" cy="18" r="9" stroke="currentColor" stroke-width="2"></circle>
+        <path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <p>Agrega personas para construir la red.</p>
+    </div>
+    <div class="noc" id="noc" style="display: none;">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" opacity=".25">
+        <rect x="6" y="10" width="32" height="28" rx="4" stroke="currentColor" stroke-width="2"></rect>
+        <line x1="14" y1="6" x2="14" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        <line x1="30" y1="6" x2="30" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+      </svg>
+      <b style="color:var(--tx2);font-size:15px">Crea o selecciona un caso</b>
+      <span style="font-size:12px">Cada caso tiene su propia red independiente</span>
+    </div>
+  </div>
+
+  <div class="det">
+    <div id="dfw" style="text-align:center;padding:4px 0"><div class="di" style="background:#FAECE7;color:#712B13;border:3px solid #D85A30">JG</div></div>
+    <div style="text-align:center">
+      <div style="font-size:13px;font-weight:500" id="dn">Joaquin Guerra</div>
+      <div id="dt" style="margin-top:3px"><span style="background:#FAECE7;color:#712B13;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500">Sospechoso</span></div>
+    </div>
+    <div><div class="dl">Area / Info</div><div id="dinfo" style="font-size:12px;color:var(--tx2)">-</div></div>
+    <div><div class="dl">Cedula / ID</div><div id="did" style="font-size:12px;color:var(--tx2)">-</div></div>
+    <div><div class="dl">Riesgo</div><div id="dr"><span style="display:inline-flex;align-items:center;gap:5px">
+    <span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block"></span>
+    <span style="font-weight:500;color:#E24B4A">Alto</span>
+  </span></div></div>
+    <div><div class="dl">Notas</div><div id="dno" style="font-size:11px;color:var(--tx2);line-height:1.5">Estafador</div></div>
+    <div><div class="dl">Vinculos (<span id="dlc">1</span>)</div><div id="dlk" style="font-size:11px;color:var(--tx2)"><div class="cr"><div style="width:22px;height:22px;border-radius:50%;background:#E6F1FB;color:#0C447C;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;border:1.5px solid #378ADD;flex-shrink:0">CA</div><span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Carlos</span><span class="rp" style="background:#EEEDFE;color:#3C3489">Conyuge</span></div></div></div>
+    <div id="dbt" style="display: flex; flex-direction: column; gap: 5px;">
+      <button style="width:100%;font-size:11px" onclick="editS()">Editar persona</button>
+      <button style="width:100%;font-size:11px" class="bt" onclick="om('lnk')">+ Vinculo desde aqui</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEYENDA -->
+<div class="leg">
+  <span style="font-weight:500;margin-right:2px">Tipos:</span>
+  <span class="li"><span class="ld" style="background:#378ADD;border:2px solid #185FA5"></span>Emp. Nirsa</span>
+  <span class="li"><span class="ld" style="background:#7F77DD;border:2px solid #534AB7"></span>Fam. interno</span>
+  <span class="li"><span class="ld" style="background:#639922;border:2px solid #3B6D11"></span>Fam. externo</span>
+  <span class="li"><span class="ld" style="background:#D85A30;border:2px solid #993C1D"></span>Sospechoso</span>
+  <span style="border-left:0.5px solid var(--bd1);padding-left:8px;margin-left:4px;font-weight:500">Vinculos:</span>
+  <span class="li"><span class="ll" style="background:#7F77DD"></span>Conyuge</span>
+  <span class="li"><span class="ll" style="background:#1D9E75"></span>Hijo/Padre</span>
+  <span class="li"><span class="ll" style="background:#BA7517"></span>Hermano/a</span>
+  <span class="li"><span class="ll" style="background:#D85A30"></span>Primo/Tio</span>
+  <span class="li"><span class="ll" style="background:#E24B4A"></span>Delictivo</span>
+  <span style="margin-left:auto;display:flex;gap:6px">
+    <span class="li"><span class="ld" style="background:#E24B4A"></span>Alto</span>
+    <span class="li"><span class="ld" style="background:#EF9F27"></span>Medio</span>
+    <span class="li"><span class="ld" style="background:#639922"></span>Bajo</span>
+  </span>
+</div>
+
+<div id="mc"></div>
+<div class="toast" id="toast">Vinculo registrado</div>
+</div><!-- .app -->
+
+<script>
+// ═══════════════════════════════════════════════
+// DATOS Y CONSTANTES
+// ═══════════════════════════════════════════════
+const SK = 'nirsa_i2_PERMANENT';
+
+const RL = {
+  conyuge:   {line:'#7F77DD',dash:false,w:3,pill:'#EEEDFE',txt:'#3C3489',label:'Conyuge'},
+  hijo:      {line:'#1D9E75',dash:false,w:3,pill:'#E1F5EE',txt:'#085041',label:'Hijo/Padre'},
+  hermano:   {line:'#BA7517',dash:false,w:3,pill:'#FAEEDA',txt:'#633806',label:'Hermano/a'},
+  primo:     {line:'#D85A30',dash:false,w:2,pill:'#FAECE7',txt:'#4A1B0C',label:'Primo/Tio'},
+  delictivo: {line:'#E24B4A',dash:true, w:3,pill:'#FCEBEB',txt:'#A32D2D',label:'Asoc.delictivo'},
+  financiero:{line:'#EF9F27',dash:true, w:2,pill:'#FAEEDA',txt:'#633806',label:'Vinc.financiero'},
+  contacto:  {line:'#888780',dash:true, w:2,pill:'#F1EFE8',txt:'#444441',label:'Contacto'},
+  otro:      {line:'#B4B2A9',dash:false,w:1,pill:'#F1EFE8',txt:'#444441',label:'Otro'},
+};
+const RK = {
+  high:{color:'#E24B4A',label:'Alto', bg:'#FCEBEB',tc:'#A32D2D'},
+  med: {color:'#EF9F27',label:'Medio',bg:'#FAEEDA',tc:'#854F0B'},
+  low: {color:'#639922',label:'Bajo', bg:'#EAF3DE',tc:'#3B6D11'},
+};
+const TM = {
+  emp:{label:'Empleado Nirsa',   color:'#185FA5',ring:'#378ADD',bg:'#E6F1FB',tc:'#0C447C'},
+  fin:{label:'Familiar interno', color:'#534AB7',ring:'#7F77DD',bg:'#EEEDFE',tc:'#3C3489'},
+  fex:{label:'Familiar externo', color:'#3B6D11',ring:'#639922',bg:'#EAF3DE',tc:'#27500A'},
+  ext:{label:'Sospechoso',       color:'#993C1D',ring:'#D85A30',bg:'#FAECE7',tc:'#712B13'},
+};
+const FM = {
+  emp:{title:'Empleado Nirsa',    hint:'Trabaja actualmente en Nirsa S.A.',          il:'Area / Departamento',   btn:'bb'},
+  fin:{title:'Familiar interno',  hint:'Familiar que TAMBIEN trabaja en Nirsa.',      il:'Area / Departamento',   btn:'bp'},
+  fex:{title:'Familiar externo',  hint:'Familiar que NO trabaja en Nirsa.',           il:'Ocupacion / Domicilio', btn:'bg'},
+  ext:{title:'Sospechoso externo',hint:'Persona externa: delincuente, contacto peligroso.', il:'Alias / Organizacion', btn:'bc'},
+};
+
+// ═══════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════
+// Si hay datos incrustados (snapshot), usarlos; si no, cargar localStorage
+const SNAPSHOT_DATA = {"casos":{"caso_1774842698680":{"nombre":"Prueba","nodes":[{"id":1,"name":"Carlos Arana","type":"emp","info":"","cedula":"","risk":"low","notes":"","ant":"","photo":null},{"id":2,"name":"Laude Fernandez","type":"emp","info":"","cedula":"","risk":"low","notes":"","ant":"","photo":null},{"id":3,"name":"Joaquin Guerra","type":"ext","info":"","cedula":"","risk":"high","notes":"Estafador","ant":"","photo":null}],"links":[{"a":"n2","b":"n1","type":"delictivo","notes":""},{"a":"n3","b":"n1","type":"conyuge","notes":""}],"nextId":4}}}; // <-- Los datos se inyectan aqui al publicar
+
+let db = {casos:{}};
+let ca = null, sel = null, sbf = 'all';
+let pos = {}, ic = {};
+let drag = null, ds = {x:0,y:0}, dm = false;
+
+const nk  = i => 'n' + i;
+const ini = n => (n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?';
+const rc  = r => RK[r]?.color || '#888';
+const cas = () => ca ? db.casos[ca] : null;
+function ssi(t){document.getElementById('sind').textContent = t;}
+
+// ═══════════════════════════════════════════════
+// PERSISTENCIA
+// ═══════════════════════════════════════════════
+function save(){
+  try{
+    localStorage.setItem(SK, JSON.stringify(db));
+    ssi('guardado'); setTimeout(()=>ssi(''), 1800);
+  } catch(e){
+    ssi('AVISO: usa "Publicar" para no perder datos');
+  }
+}
+
+function load(){
+  ssi('cargando...');
+  // Si es snapshot con datos incrustados, usarlos (modo solo lectura visual)
+  if(SNAPSHOT_DATA){
+    db = SNAPSHOT_DATA;
+    const ks = Object.keys(db.casos);
+    if(ks.length) ca = ks[0];
+    precargarFotos();
+    ssi('snapshot cargado');
+    setTimeout(()=>ssi(''),2000);
+    rTabs(); rSidebar(); rStats(); rcv();
+    return;
+  }
+  // Cargar localStorage
+  try{
+    const raw = localStorage.getItem(SK);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p.casos) db = p;
+      else {
+        // Migrar formato anterior
+        const id = 'caso_legacy';
+        db = {casos:{[id]:{nombre:'Datos anteriores',nodes:p.nodes||[],links:p.links||[],nextId:p.nextId||1}}};
+        ca = id;
+      }
+      const ks = Object.keys(db.casos);
+      if(ks.length && !ca) ca = ks[0];
+      precargarFotos();
+      ssi('datos restaurados'); setTimeout(()=>ssi(''), 2000);
+    } else {
+      ssi('');
+    }
+  } catch(e){ ssi(''); }
+  rTabs(); rSidebar(); rStats(); rcv();
+}
+
+function precargarFotos(){
+  Object.keys(db.casos).forEach(cid=>{
+    db.casos[cid].nodes.forEach(n=>{
+      if(n.photo){
+        const img = new Image();
+        img.src = n.photo;
+        img.onload = () => { ic[cid+'_'+n.id] = img; draw(); };
+      }
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════
+// PUBLICAR SNAPSHOT — genera HTML con datos incrustados
+// ═══════════════════════════════════════════════
+function publicarSnapshot(){
+  // Serializar los datos actuales
+  const dataStr = JSON.stringify(db);
+  
+  // Leer el HTML actual de la pagina
+  const htmlActual = document.documentElement.outerHTML;
+  
+  // Reemplazar la linea SNAPSHOT_DATA = null con los datos reales
+  const htmlConDatos = htmlActual.replace(
+    'const SNAPSHOT_DATA = {"casos":{"caso_1774842698680":{"nombre":"Prueba","nodes":[{"id":1,"name":"Carlos Arana","type":"emp","info":"","cedula":"","risk":"low","notes":"","ant":"","photo":null},{"id":2,"name":"Laude Fernandez","type":"emp","info":"","cedula":"","risk":"low","notes":"","ant":"","photo":null},{"id":3,"name":"Joaquin Guerra","type":"ext","info":"","cedula":"","risk":"high","notes":"Estafador","ant":"","photo":null},{"id":4,"name":"Dylan G","type":"emp","info":"","cedula":"","risk":"med","notes":"","ant":"","photo":null}],"links":[{"a":"n2","b":"n1","type":"delictivo","notes":""},{"a":"n3","b":"n1","type":"conyuge","notes":""},{"a":"n4","b":"n3","type":"conyuge","notes":""}],"nextId":5}}};',
+    'const SNAPSHOT_DATA = ' + dataStr + ';'
+  );
+  
+  // Generar nombre de archivo con fecha y nombre del primer caso
+  const cids = Object.keys(db.casos);
+  const nombreCaso = cids.length ? db.casos[cids[0]].nombre.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30) : 'nirsa_i2';
+  const fecha = new Date().toISOString().slice(0,10);
+  const nombreArchivo = 'nirsa_i2_' + nombreCaso + '_' + fecha + '.html';
+  
+  // Descargar
+  const blob = new Blob([htmlConDatos], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nombreArchivo;
+  a.click();
+  
+  toast('Archivo descargado: ' + nombreArchivo + '\nAbrelo en cualquier navegador — ya lleva todos los datos adentro.');
+}
+
+// ═══════════════════════════════════════════════
+// GESTION DE CASOS
+// ═══════════════════════════════════════════════
+function nuevoCaso(){
+  const n = prompt('Nombre del caso (ej: Caso Sacon 2024):');
+  if(!n || !n.trim()) return;
+  const id = 'caso_' + Date.now();
+  db.casos[id] = {nombre:n.trim(), nodes:[], links:[], nextId:1};
+  ca = id; sel = null; pos = {};
+  save(); rTabs(); rSidebar(); rStats(); draw();
+  toast('Caso "' + n.trim() + '" creado');
+}
+
+function selCaso(id){
+  ca = id; sel = null; pos = {}; ic = {};
+  const c = db.casos[id];
+  if(c) c.nodes.forEach(n=>{
+    if(n.photo){ const img=new Image(); img.src=n.photo; img.onload=()=>{ic[id+'_'+n.id]=img;draw();}; }
+  });
+  rTabs(); rSidebar(); rStats(); draw();
+}
+
+function delCaso(id, e){
+  e.stopPropagation();
+  if(!confirm('Eliminar este caso y TODOS sus datos?\nEsta accion no se puede deshacer.')) return;
+  delete db.casos[id];
+  const ks = Object.keys(db.casos);
+  ca = ks.length ? ks[0] : null;
+  sel = null; pos = {}; ic = {};
+  save(); rTabs(); rSidebar(); rStats(); draw();
+}
+
+function rTabs(){
+  const ct = document.getElementById('ctabs');
+  const ks = Object.keys(db.casos);
+  if(!ks.length){
+    ct.innerHTML = '<span style="font-size:11px;color:var(--tx3)">Sin casos - crea uno para empezar</span>';
+    document.getElementById('noc').style.display = 'flex';
+    return;
+  }
+  document.getElementById('noc').style.display = 'none';
+  ct.innerHTML = ks.map(id=>`
+    <div style="display:inline-flex;align-items:center;gap:3px">
+      <div class="ctab${id===ca?' on':''}" onclick="selCaso('${id}')">${db.casos[id].nombre}</div>
+      <div class="cdel" onclick="delCaso('${id}',event)" title="Eliminar caso">x</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// STATS Y SIDEBAR
+// ═══════════════════════════════════════════════
+function rStats(){
+  const c = cas(); const ns = c?c.nodes:[]; const ls = c?c.links:[];
+  document.getElementById('se').textContent   = ns.filter(n=>n.type==='emp').length;
+  document.getElementById('sfin').textContent = ns.filter(n=>n.type==='fin').length;
+  document.getElementById('sfex').textContent = ns.filter(n=>n.type==='fex').length;
+  document.getElementById('ss').textContent   = ns.filter(n=>n.type==='ext').length;
+  document.getElementById('slnk').textContent = ls.length;
+  document.getElementById('shi').textContent  = ns.filter(n=>n.risk==='high').length;
+  document.getElementById('nc').textContent   = ns.length;
+}
+
+function setF(f){
+  sbf = f;
+  const map = {all:'fa',emp:'fe',fin:'ff',fex:'fx',ext:'fss'};
+  Object.keys(map).forEach(x => document.getElementById(map[x])?.classList.toggle('on', x===f));
+  rSidebar(document.getElementById('srch').value);
+}
+
+function rSidebar(q=''){
+  const nl = document.getElementById('nl');
+  if(!ca){ nl.innerHTML='<div class="esb">Crea un caso<br>para comenzar.</div>'; return; }
+  const c = cas(); if(!c) return;
+  let fl = c.nodes.filter(n=>n.name.toLowerCase().includes((q||'').toLowerCase()));
+  if(sbf !== 'all') fl = fl.filter(n=>n.type===sbf);
+  if(!fl.length){ nl.innerHTML=`<div class="esb">${c.nodes.length?'Sin resultados.':'Agrega personas<br>para comenzar.'}</div>`; return; }
+  nl.innerHTML = fl.map(n=>{
+    const m = TM[n.type]||TM.emp;
+    const fh = n.photo
+      ? `<img src="${n.photo}" class="sf2" style="border-color:${m.ring}">`
+      : `<div class="si2" style="background:${m.bg};color:${m.tc};border:2px solid ${m.ring}">${ini(n.name)}</div>`;
+    return `<div class="nr${sel===n.id?' on':''}" onclick="selN(${n.id})">
+      ${fh}
+      <div class="ni"><div class="nn">${n.name}</div><div class="ns">${m.label}</div></div>
+      <div class="rd" style="background:${rc(n.risk)}"></div>
+    </div>`;
+  }).join('');
+}
+
+function selN(id){ sel=id; rSidebar(document.getElementById('srch').value); rDet(id); place(); draw(); }
+
+function rDet(id){
+  const c = cas(); const n = c ? c.nodes.find(x=>x.id===id) : null;
+  const fw = document.getElementById('dfw');
+  if(!n){
+    fw.innerHTML = '<div class="di" style="background:var(--bg2);color:var(--tx3)">?</div>';
+    document.getElementById('dn').textContent = 'Selecciona un nodo';
+    document.getElementById('dt').innerHTML = '-';
+    ['dinfo','did','dno'].forEach(i=>document.getElementById(i).textContent='-');
+    document.getElementById('dr').innerHTML = '-';
+    document.getElementById('dlk').innerHTML = '-';
+    document.getElementById('dlc').textContent = '0';
+    document.getElementById('dbt').style.display = 'none';
+    return;
+  }
+  const m = TM[n.type]||TM.emp;
+  fw.innerHTML = n.photo
+    ? `<img src="${n.photo}" class="df" style="border-color:${m.ring}">`
+    : `<div class="di" style="background:${m.bg};color:${m.tc};border:3px solid ${m.ring}">${ini(n.name)}</div>`;
+  document.getElementById('dn').textContent = n.name;
+  document.getElementById('dt').innerHTML = `<span style="background:${m.bg};color:${m.tc};padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500">${m.label}</span>`;
+  document.getElementById('dinfo').textContent = n.info   || '-';
+  document.getElementById('did').textContent   = n.cedula || '-';
+  document.getElementById('dr').innerHTML = `<span style="display:inline-flex;align-items:center;gap:5px">
+    <span style="width:8px;height:8px;border-radius:50%;background:${rc(n.risk)};display:inline-block"></span>
+    <span style="font-weight:500;color:${rc(n.risk)}">${RK[n.risk].label}</span>
+  </span>`;
+  document.getElementById('dno').textContent = n.notes || '-';
+  document.getElementById('dbt').style.display = 'flex';
+  const key = nk(id);
+  const ml = c.links.filter(l=>l.a===key||l.b===key);
+  document.getElementById('dlc').textContent = ml.length;
+  if(!ml.length){ document.getElementById('dlk').innerHTML='<span style="color:var(--tx3)">Sin vinculos registrados</span>'; return; }
+  document.getElementById('dlk').innerHTML = ml.map(l=>{
+    const ok = l.a===key ? l.b : l.a;
+    const o  = c.nodes.find(x=>nk(x.id)===ok); if(!o) return '';
+    const r  = RL[l.type]||RL.otro; const om = TM[o.type]||TM.emp;
+    const fs = o.photo
+      ? `<img src="${o.photo}" style="width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid ${om.ring};flex-shrink:0">`
+      : `<div style="width:22px;height:22px;border-radius:50%;background:${om.bg};color:${om.tc};display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:500;border:1.5px solid ${om.ring};flex-shrink:0">${ini(o.name)}</div>`;
+    return `<div class="cr">${fs}<span style="flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.name.split(' ')[0]}</span><span class="rp" style="background:${r.pill};color:${r.txt}">${r.label}</span></div>`;
+  }).join('');
+}
+
+function filtra(q){ rSidebar(q); }
+function resetV(){ pos={}; place(); draw(); }
+function editS(){ if(sel!==null){const c=cas();const n=c&&c.nodes.find(x=>x.id===sel);if(n)om(n.type,sel);} }
+
+// ═══════════════════════════════════════════════
+// GRAFO
+// ═══════════════════════════════════════════════
+function place(){
+  const cv=document.getElementById('cv'); const W=cv.offsetWidth||500,H=cv.offsetHeight||500,cx=W/2,cy=H/2;
+  const c=cas(); if(!c||!c.nodes.length)return;
+  if(sel!==null){
+    const sk=nk(sel); if(!pos[sk])pos[sk]={x:cx,y:cy};
+    const conn=new Set([sk]); c.links.filter(l=>l.a===sk||l.b===sk).forEach(l=>{conn.add(l.a);conn.add(l.b);});
+    const oth=[...conn].filter(k=>k!==sk); const r1=Math.min(W,H)*0.33;
+    oth.forEach((k,i)=>{if(pos[k])return;const a=(2*Math.PI*i/Math.max(1,oth.length))-Math.PI/2;pos[k]={x:cx+r1*Math.cos(a),y:cy+r1*Math.sin(a)};});
+    c.nodes.filter(n=>!conn.has(nk(n.id))).forEach((n,i,arr)=>{const k=nk(n.id);if(pos[k])return;const a=(2*Math.PI*i/Math.max(1,arr.length))-Math.PI/2;pos[k]={x:cx+Math.min(W,H)*.47*Math.cos(a),y:cy+Math.min(W,H)*.47*Math.sin(a)};});
+  } else {
+    const r=Math.min(W,H)*0.38;
+    c.nodes.forEach((n,i)=>{const k=nk(n.id);if(pos[k])return;const a=(2*Math.PI*i/c.nodes.length)-Math.PI/2;pos[k]={x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};});
+  }
+}
+
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+
+function draw(){
+  const cv=document.getElementById('cv'); const dpr=window.devicePixelRatio||1;
+  const W=cv.offsetWidth,H=cv.offsetHeight; if(!W||!H)return;
+  cv.width=W*dpr; cv.height=H*dpr;
+  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,H);
+  const c=cas();
+  document.getElementById('ecv').style.display=(c&&c.nodes.length===0)?'flex':'none';
+  if(!c||!c.nodes.length)return;
+  const sk=sel!==null?nk(sel):null;
+
+  // Dibujar links
+  c.links.forEach(l=>{
+    const p1=pos[l.a],p2=pos[l.b]; if(!p1||!p2)return;
+    const hi=sk&&(l.a===sk||l.b===sk); const r=RL[l.type]||RL.otro;
+    const alpha=hi?'ee':(sk?'22':'99');
+    ctx.save(); ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y);
+    ctx.strokeStyle=r.line+alpha; ctx.lineWidth=hi?r.w+1:r.w;
+    if(r.dash)ctx.setLineDash([7,4]); else ctx.setLineDash([]);
+    ctx.stroke(); ctx.restore();
+    // Etiqueta sobre la linea
+    if(hi||!sk){
+      const mx=(p1.x+p2.x)/2, my=(p1.y+p2.y)/2;
+      ctx.font='500 10px var(--f)';
+      const tw=ctx.measureText(r.label).width;
+      const pw=tw+12, ph=17, px=mx-pw/2, py=my-ph/2;
+      ctx.save(); rr(ctx,px,py,pw,ph,8);
+      ctx.fillStyle=r.pill+(hi?'ff':'cc'); ctx.fill();
+      ctx.strokeStyle=r.line+(hi?'99':'44'); ctx.lineWidth=0.5; ctx.stroke();
+      ctx.fillStyle=r.txt; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(r.label,mx,my+0.5); ctx.restore();
+    }
+  });
+
+  // Dibujar nodos
+  const NR=30;
+  c.nodes.forEach(n=>{
+    const k=nk(n.id); const p=pos[k]; if(!p)return;
+    const iS=n.id===sel;
+    const isC=sk&&c.links.some(l=>(l.a===sk&&l.b===k)||(l.b===sk&&l.a===k));
+    const dim=sk&&!iS&&!isC;
+    const nr=iS?NR+6:NR; const m=TM[n.type]||TM.emp; const img=ic[ca+'_'+n.id];
+
+    if(iS){ ctx.beginPath();ctx.arc(p.x,p.y,nr+8,0,Math.PI*2);ctx.fillStyle=m.ring+'22';ctx.fill(); }
+    // Anillo riesgo
+    ctx.beginPath();ctx.arc(p.x,p.y,nr+4,0,Math.PI*2);
+    ctx.strokeStyle=rc(n.risk)+(dim?'33':iS?'ff':'bb'); ctx.lineWidth=iS?3:2; ctx.stroke();
+    // Anillo tipo
+    ctx.beginPath();ctx.arc(p.x,p.y,nr+1,0,Math.PI*2);
+    ctx.strokeStyle=m.ring+(dim?'44':'cc'); ctx.lineWidth=2; ctx.stroke();
+    // Foto o iniciales
+    ctx.save(); ctx.beginPath();ctx.arc(p.x,p.y,nr,0,Math.PI*2);ctx.clip();
+    if(img){ ctx.globalAlpha=dim?0.3:1; ctx.drawImage(img,p.x-nr,p.y-nr,nr*2,nr*2); }
+    else{
+      ctx.fillStyle=m.bg+(dim?'99':''); ctx.fill();
+      ctx.font=`500 ${Math.round(nr*0.55)}px var(--f)`;
+      ctx.fillStyle=m.tc+(dim?'66':''); ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(ini(n.name),p.x,p.y+1);
+    }
+    ctx.restore();
+    // Etiqueta nombre
+    const bY=p.y+nr+6;
+    const dn=n.name.split(' ').slice(0,2).join(' ');
+    ctx.font=`${iS?'500 11px':'10px'} var(--f)`;
+    const nw=ctx.measureText(dn).width;
+    const bw=nw+14, bh=18, bx=p.x-bw/2;
+    rr(ctx,bx,bY,bw,bh,9);
+    ctx.fillStyle=m.bg+(dim?'88':'ee'); ctx.fill();
+    ctx.strokeStyle=m.ring+(dim?'22':'88'); ctx.lineWidth=0.5; ctx.stroke();
+    ctx.fillStyle=m.tc+(dim?'55':''); ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(dn,p.x,bY+bh/2);
+    // Sub-etiqueta tipo
+    ctx.font='9px var(--f)'; ctx.fillStyle=m.color+(dim?'33':'66');
+    ctx.fillText({emp:'Nirsa',fin:'F.Interno',fex:'F.Externo',ext:'Sosp.'}[n.type]||'',p.x,bY+bh+11);
+    if(iS){ ctx.font='500 10px var(--f)'; ctx.fillStyle='#185FA5'; ctx.fillText('CASO CENTRAL',p.x,p.y-nr-12); }
+  });
+  ctx.textBaseline='alphabetic';
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════
+// MODALES
+// ═══════════════════════════════════════════════
+function om(type, eid){
+  if(!ca){ toast('Primero crea un caso'); return; }
+  const mc=document.getElementById('mc'); const c=cas();
+  const e=eid!=null ? c.nodes.find(x=>x.id===eid) : null;
+
+  if(type in FM){
+    const fm=FM[type];
+    const xext=type==='ext'?`<div><label>Actividad / Antecedentes</label><input type="text" id="mant" value="${e?e.ant||'':''}" placeholder="Ej: extorsion, narcotrafico..."></div>`:'';
+    const pp=e&&e.photo?`<img id="mip" src="${e.photo}" class="ip" style="display:block">`:`<img id="mip" class="ip">`;
+    mc.innerHTML=`<div class="mb" onclick="if(event.target===this)cm()"><div class="mo">
+      <h3>${e?'Editar':'Nuevo'} - ${fm.title}</h3>
+      <p class="hint">${fm.hint}</p>
+      ${pp}
+      <div><label>Foto (opcional — se guarda dentro del archivo)</label><input type="file" id="mph" accept="image/*" onchange="prevFoto(this)"></div>
+      <div><label>Nombre completo *</label><input type="text" id="mnm" value="${e?e.name:''}" placeholder="Nombre y apellido"></div>
+      <div><label>${fm.il}</label><input type="text" id="minf" value="${e?e.info||'':''}" placeholder="..."></div>
+      <div><label>Cedula / ID</label><input type="text" id="mced" value="${e?e.cedula||'':''}" placeholder="Opcional"></div>
+      <div><label>Nivel de riesgo</label><select id="mrsk">
+        <option value="low"${e?.risk==='low'?' selected':''}>Bajo</option>
+        <option value="med"${e?.risk==='med'?' selected':''}>Medio</option>
+        <option value="high"${e?.risk==='high'?' selected':''}>Alto</option>
+      </select></div>
+      ${xext}
+      <div><label>Notas del caso</label><textarea id="mnot">${e?e.notes||'':''}</textarea></div>
+      <div class="mbt">
+        ${e?`<button class="br" onclick="delN(${e.id})">Eliminar</button>`:''}
+        <button onclick="cm()">Cancelar</button>
+        <button class="${fm.btn}" onclick="saveN('${type}',${e?e.id:'null'})">${e?'Guardar':'Agregar'}</button>
+      </div>
+    </div></div>`;
+    window._pb = e?.photo || null;
+
+  } else if(type==='lnk'){
+    if(!c||c.nodes.length<2){ toast('Necesitas al menos 2 personas'); return; }
+    const opts=c.nodes.map(n=>`<option value="${nk(n.id)}">${n.name} - ${TM[n.type]?.label||''}</option>`).join('');
+    mc.innerHTML=`<div class="mb" onclick="if(event.target===this)cm()"><div class="mo">
+      <h3>Nuevo vinculo</h3>
+      <div><label>Persona A *</label><select id="mea">${opts}</select></div>
+      <div><label>Tipo de relacion *</label><select id="mtp">
+        <option value="conyuge">Conyuge / Pareja</option>
+        <option value="hijo">Hijo / Padre</option>
+        <option value="hermano">Hermano/a</option>
+        <option value="primo">Primo / Tio</option>
+        <option value="delictivo">Asociado delictivo</option>
+        <option value="financiero">Vinculo financiero</option>
+        <option value="contacto">Contacto conocido</option>
+        <option value="otro">Otro</option>
+      </select></div>
+      <div><label>Persona B *</label><select id="meb">${opts}</select></div>
+      <div><label>Notas</label><input type="text" id="mln" placeholder="Observaciones opcionales..."></div>
+      <div class="mbt"><button onclick="cm()">Cancelar</button><button class="bt" onclick="saveLnk()">Registrar vinculo</button></div>
+    </div></div>`;
+    if(sel!==null) document.getElementById('mea').value = nk(sel);
+  }
+}
+
+function prevFoto(inp){
+  const f=inp.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    window._pb=e.target.result;
+    const p=document.getElementById('mip'); if(p){p.src=e.target.result;p.style.display='block';}
+  };
+  r.readAsDataURL(f);
+}
+function cm(){ document.getElementById('mc').innerHTML=''; window._pb=null; }
+
+function saveN(type,id){
+  const c=cas(); if(!c)return;
+  const name=document.getElementById('mnm').value.trim(); if(!name){toast('El nombre es obligatorio');return;}
+  const info   = document.getElementById('minf').value.trim();
+  const cedula = document.getElementById('mced').value.trim();
+  const risk   = document.getElementById('mrsk').value;
+  const notes  = document.getElementById('mnot').value.trim();
+  const ant    = type==='ext' ? (document.getElementById('mant')?.value.trim()||'') : '';
+  const photo  = window._pb || null;
+
+  if(id!==null && id!=='null'){
+    const n=c.nodes.find(x=>x.id===id);
+    if(n){ Object.assign(n,{name,type,info,cedula,risk,notes,ant}); if(photo!==null)n.photo=photo; }
+    if(photo){ const img=new Image();img.src=photo;img.onload=()=>{ic[ca+'_'+id]=img;draw();}; }
+    toast('Actualizado');
+  } else {
+    const nid=c.nextId++;
+    c.nodes.push({id:nid,name,type,info,cedula,risk,notes,ant,photo:photo||null});
+    if(photo){ const img=new Image();img.src=photo;img.onload=()=>{ic[ca+'_'+nid]=img;draw();}; }
+    toast(TM[type].label + ' agregado');
+  }
+  cm(); save(); rStats(); rSidebar(); place(); draw();
+  if(id && sel===id) rDet(id);
+}
+
+function delN(id){
+  const c=cas(); if(!c)return;
+  const k=nk(id);
+  c.nodes=c.nodes.filter(n=>n.id!==id);
+  c.links=c.links.filter(l=>l.a!==k&&l.b!==k);
+  delete pos[k]; delete ic[ca+'_'+id];
+  if(sel===id){sel=null;rDet(null);}
+  cm(); save(); rStats(); rSidebar(); draw(); toast('Eliminado');
+}
+
+function saveLnk(){
+  const c=cas(); if(!c)return;
+  const a=document.getElementById('mea').value;
+  const b=document.getElementById('meb').value;
+  const type=document.getElementById('mtp').value;
+  if(a===b){toast('Selecciona dos personas distintas');return;}
+  if(c.links.find(l=>(l.a===a&&l.b===b)||(l.a===b&&l.b===a))){toast('Ese vinculo ya existe');return;}
+  c.links.push({a,b,type,notes:document.getElementById('mln').value.trim()});
+  cm(); save(); rStats(); if(sel!==null)rDet(sel); place(); draw(); toast('Vinculo registrado');
+}
+
+// ═══════════════════════════════════════════════
+// INTERACCION CANVAS (drag & click)
+// ═══════════════════════════════════════════════
+const cv=document.getElementById('cv');
+
+cv.addEventListener('mousedown',e=>{
+  const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const c=cas(); if(!c)return;
+  for(const n of c.nodes){
+    const k=nk(n.id);const p=pos[k];if(!p)continue;
+    if(Math.hypot(x-p.x,y-p.y)<38){drag=k;ds={x,y};dm=false;return;}
+  }
+});
+cv.addEventListener('mousemove',e=>{
+  if(!drag)return;
+  const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  if(Math.hypot(x-ds.x,y-ds.y)>5)dm=true;
+  if(dm){pos[drag]={x,y};draw();}
+});
+cv.addEventListener('mouseup',()=>{
+  if(drag){if(!dm){const id=parseInt(drag.replace('n',''));selN(id);}drag=null;dm=false;}
+});
+cv.addEventListener('mouseleave',()=>{drag=null;dm=false;});
+
+cv.addEventListener('touchstart',e=>{
+  const t=e.touches[0],r=cv.getBoundingClientRect(),x=t.clientX-r.left,y=t.clientY-r.top;
+  const c=cas();if(!c)return;
+  for(const n of c.nodes){const k=nk(n.id);const p=pos[k];if(!p)continue;if(Math.hypot(x-p.x,y-p.y)<36){drag=k;ds={x,y};dm=false;e.preventDefault();return;}}
+},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  if(!drag)return;
+  const t=e.touches[0],r=cv.getBoundingClientRect(),x=t.clientX-r.left,y=t.clientY-r.top;
+  if(Math.hypot(x-ds.x,y-ds.y)>5)dm=true;
+  if(dm){pos[drag]={x,y};draw();}
+  e.preventDefault();
+},{passive:false});
+cv.addEventListener('touchend',()=>{
+  if(drag){if(!dm){const id=parseInt(drag.replace('n',''));selN(id);}drag=null;dm=false;}
+});
+
+function rcv(){
+  const w=document.getElementById('cw');
+  cv.style.width=w.offsetWidth+'px'; cv.style.height=w.offsetHeight+'px';
+  place(); draw();
+}
+window.addEventListener('resize',rcv);
+window.addEventListener('load',()=>{rcv();load();});
+</script>
+
+
+</body></html>
