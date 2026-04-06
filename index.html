@@ -3,67 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nirsa i2 — Red de Investigación v2</title>
+<title>Nirsa i2 — Red de Investigación</title>
 
-<!-- Firebase CDN (compat = sin módulos ES, funciona directo en HTML) -->
+<!-- Firebase CDN (compat — funciona directo en HTML sin npm ni build) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
-
-:root {
-  --bg:       #0f1117;
-  --bg2:      #161922;
-  --bg3:      #1e2230;
-  --border:   rgba(255,255,255,0.08);
-  --border2:  rgba(255,255,255,0.14);
-  --text:     #e2e8f0;
-  --text2:    #94a3b8;
-  --text3:    #64748b;
-  --mono:     'IBM Plex Mono', monospace;
-  --sans:     'IBM Plex Sans', sans-serif;
-
-  /* node types */
-  --emp-bg:   #0a1628; --emp-border: #2563eb; --emp-txt: #93c5fd; --emp-label: #1d4ed8;
-  --fin-bg:   #120a28; --fin-border: #7c3aed; --fin-txt: #c4b5fd; --fin-label: #6d28d9;
-  --fex-bg:   #0a1a0a; --fex-border: #16a34a; --fex-txt: #86efac; --fex-label: #15803d;
-  --ext-bg:   #1a0a0a; --ext-border: #dc2626; --ext-txt: #fca5a5; --ext-label: #b91c1c;
-
-  /* risk */
-  --high:     #ef4444; --med: #f59e0b; --low: #22c55e;
-
-  /* link colors */
-  --lnk-conyuge:    #a78bfa;
-  --lnk-hijo:       #34d399;
-  --lnk-hermano:    #fbbf24;
-  --lnk-primo:      #fb923c;
-  --lnk-delictivo:  #f87171;
-  --lnk-financiero: #38bdf8;
-  --lnk-contacto:   #94a3b8;
-  --lnk-otro:       #64748b;
+:root{
+  --bg:#0f1117;--bg2:#161922;--bg3:#1e2230;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
-/* ── TOP BAR ── */
+/* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border2);flex-shrink:0;gap:10px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:9px}
-.brand-logo svg{flex-shrink:0}
 .brand-name{font-size:14px;font-weight:600;letter-spacing:-.3px}
 .brand-name span{color:var(--text3);font-weight:400}
 .conf-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:3px;background:#7f1d1d;color:#fca5a5;letter-spacing:.08em;border:1px solid #991b1b}
-.save-ind{font-family:var(--mono);font-size:10px;color:var(--text3)}
+#save-ind{font-family:var(--mono);font-size:10px;color:var(--text3);min-width:110px;text-align:right}
+
+/* ── CASE BAR ── */
+.casebar{display:flex;align-items:center;gap:0;background:var(--bg2);border-bottom:1px solid var(--border2);flex-shrink:0;overflow-x:auto;min-height:36px}
+.case-tab{display:flex;align-items:center;gap:6px;padding:6px 14px;border-right:1px solid var(--border);cursor:pointer;font-size:11px;color:var(--text3);white-space:nowrap;transition:all .12s;flex-shrink:0}
+.case-tab:hover{background:var(--bg3);color:var(--text2)}
+.case-tab.active{background:var(--bg3);color:var(--text);border-bottom:2px solid #2563eb}
+.case-tab .case-close{font-size:13px;color:var(--text3);line-height:1;padding:0 2px;margin-left:2px;border-radius:3px}
+.case-tab .case-close:hover{background:rgba(255,255,255,0.1);color:var(--text)}
+.case-add-btn{padding:6px 12px;font-size:18px;color:var(--text3);cursor:pointer;flex-shrink:0;line-height:1}
+.case-add-btn:hover{color:var(--text);background:var(--bg3)}
+.casebar-empty{padding:8px 14px;font-size:11px;color:var(--text3);font-style:italic}
 
 /* ── STATS ── */
-.statsbar{display:flex;gap:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
-.stat{display:flex;flex-direction:column;align-items:center;padding:7px 16px;border-right:1px solid var(--border);white-space:nowrap;min-width:80px}
-.stat-n{font-family:var(--mono);font-size:17px;font-weight:600;line-height:1}
-.stat-l{font-size:9px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+.statsbar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.stat{display:flex;flex-direction:column;align-items:center;padding:6px 14px;border-right:1px solid var(--border);white-space:nowrap;min-width:72px}
+.stat-n{font-family:var(--mono);font-size:16px;font-weight:600;line-height:1}
+.stat-l{font-size:9px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.06em}
 
 /* ── TOOLBAR ── */
-.toolbar{display:flex;gap:5px;padding:7px 10px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;align-items:center;flex-wrap:wrap}
+.toolbar{display:flex;gap:5px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;align-items:center;flex-wrap:wrap}
 .toolbar input[type=text]{flex:1;min-width:120px;font-size:12px;font-family:var(--sans);padding:5px 10px;border:1px solid var(--border2);border-radius:4px;background:var(--bg3);color:var(--text);outline:none}
 .toolbar input[type=text]:focus{border-color:#2563eb}
 .toolbar input[type=text]::placeholder{color:var(--text3)}
@@ -74,10 +57,11 @@ button:hover{background:var(--bg2);color:var(--text)}
 .b-fex{background:#0a1a0a;color:#86efac;border-color:#16a34a}.b-fex:hover{background:#14532d}
 .b-ext{background:#1a0a0a;color:#fca5a5;border-color:#dc2626}.b-ext:hover{background:#7f1d1d}
 .b-lnk{background:#0a1a1e;color:#7dd3fc;border-color:#0284c7}.b-lnk:hover{background:#0c4a6e}
-.b-del{background:#1a1209;color:#fcd34d;border-color:#d97706}.b-del:hover{background:#78350f}
+.b-danger{background:#1a0a0a;color:#fca5a5;border-color:#dc2626}.b-danger:hover{background:#7f1d1d}
+.b-confirm{background:#0a1628;color:#93c5fd;border-color:#2563eb}.b-confirm:hover{background:#1e3a8a}
 .sep{width:1px;height:22px;background:var(--border2);flex-shrink:0}
 
-/* ── LAYOUT ── */
+/* ── WORKSPACE ── */
 .workspace{display:flex;flex:1;overflow:hidden}
 
 /* ── SIDEBAR ── */
@@ -89,7 +73,6 @@ button:hover{background:var(--bg2);color:var(--text)}
 .sf.on{color:var(--text);background:var(--bg3)}
 .n-list{flex:1;overflow-y:auto}
 .n-list::-webkit-scrollbar{width:4px}
-.n-list::-webkit-scrollbar-track{background:transparent}
 .n-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .n-item{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s}
 .n-item:hover{background:var(--bg3)}
@@ -103,11 +86,19 @@ button:hover{background:var(--bg2);color:var(--text)}
 .empty-sb{padding:24px 12px;text-align:center;color:var(--text3);font-size:11px;line-height:1.8}
 
 /* ── CANVAS ── */
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);cursor:default}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg)}
 canvas{display:block;position:absolute;top:0;left:0}
 .empty-cv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text3);font-size:13px;text-align:center;pointer-events:none;line-height:1.7}
+.zoom-label{position:absolute;bottom:118px;right:12px;font-family:var(--mono);font-size:9px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);padding:2px 6px;border-radius:3px;z-index:5;pointer-events:none}
+.zoom-ctrl{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:4px;z-index:5}
+.zoom-ctrl button{width:30px;height:30px;padding:0;font-size:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--border2)}
+#minimap{position:absolute;bottom:12px;left:12px;width:160px;height:100px;border:1px solid var(--border2);border-radius:5px;background:rgba(15,17,23,0.92);z-index:5;cursor:pointer;overflow:hidden}
+#minimap canvas{display:block;width:100%;height:100%}
+.minimap-label{position:absolute;top:3px;left:5px;font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.06em;pointer-events:none;font-family:var(--mono)}
+.group-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);padding:3px 10px;border-radius:99px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:4}
+.group-hint.show{opacity:1}
 
-/* ── DETAIL PANEL ── */
+/* ── DETAIL ── */
 .detail{width:210px;min-width:210px;border-left:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;overflow-y:auto}
 .detail::-webkit-scrollbar{width:4px}
 .detail::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
@@ -115,7 +106,6 @@ canvas{display:block;position:absolute;top:0;left:0}
 .det-avatar{width:72px;height:72px;border-radius:6px;object-fit:cover;margin:0 auto 8px;display:block}
 .det-ini{width:72px;height:72px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 8px}
 .det-name{font-size:13px;font-weight:600;line-height:1.3;margin-bottom:4px}
-.det-type-pill{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;letter-spacing:.06em;text-transform:uppercase}
 .det-section{padding:8px 10px;border-bottom:1px solid var(--border)}
 .det-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px}
 .det-val{font-size:11px;color:var(--text2);line-height:1.5}
@@ -134,23 +124,9 @@ canvas{display:block;position:absolute;top:0;left:0}
 .leg-dot{width:8px;height:8px;border-radius:2px}
 .leg-circle{width:8px;height:8px;border-radius:50%}
 
-/* ── CANVAS ZOOM CONTROLS ── */
-.zoom-ctrl{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:4px;z-index:5}
-.zoom-ctrl button{width:30px;height:30px;padding:0;font-size:16px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--border2)}
-.zoom-label{position:absolute;bottom:80px;right:12px;font-family:var(--mono);font-size:9px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);padding:2px 6px;border-radius:3px;z-index:5;pointer-events:none}
-
-/* ── MINIMAP ── */
-#minimap{position:absolute;bottom:12px;left:12px;width:160px;height:100px;border:1px solid var(--border2);border-radius:5px;background:rgba(15,17,23,0.92);z-index:5;cursor:pointer;overflow:hidden}
-#minimap canvas{display:block;width:100%;height:100%}
-.minimap-label{position:absolute;top:3px;left:5px;font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.06em;pointer-events:none;font-family:var(--mono)}
-
-/* ── CLUSTER GROUPS ── */
-.group-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);padding:3px 10px;border-radius:99px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:4}
-.group-hint.show{opacity:1}
-
 /* ── MODAL ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:18px;width:320px;display:flex;flex-direction:column;gap:11px;max-height:88vh;overflow-y:auto}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:18px;width:330px;display:flex;flex-direction:column;gap:11px;max-height:88vh;overflow-y:auto}
 .modal h3{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
 .modal label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);display:block;margin-bottom:3px}
 .modal input[type=text],.modal input[type=file],.modal select,.modal textarea{width:100%;font-size:12px;font-family:var(--sans);padding:6px 9px;border:1px solid var(--border2);border-radius:4px;background:var(--bg3);color:var(--text);outline:none}
@@ -161,12 +137,15 @@ canvas{display:block;position:absolute;top:0;left:0}
 .modal-hint{font-size:10px;color:var(--text3);padding:6px 9px;background:var(--bg3);border-radius:4px;line-height:1.5;border-left:3px solid var(--border2)}
 .modal-btns{display:flex;gap:6px;justify-content:flex-end;margin-top:4px}
 .img-preview{width:64px;height:64px;border-radius:6px;object-fit:cover;border:1px solid var(--border2);display:none;margin:0 auto}
-.b-danger{background:#1a0a0a;color:#fca5a5;border-color:#dc2626}.b-danger:hover{background:#7f1d1d}
-.b-confirm{background:#0a1628;color:#93c5fd;border-color:#2563eb}.b-confirm:hover{background:#1e3a8a}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:8px 18px;font-size:12px;z-index:100;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:8px 18px;font-size:12px;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.5)}
 .toast.show{opacity:1}
+
+/* ── NO CASE ── */
+.no-case{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--text3)}
+.no-case h2{font-size:18px;font-weight:600;color:var(--text2)}
+.no-case p{font-size:12px;line-height:1.7;text-align:center;max-width:320px}
 </style>
 </head>
 <body>
@@ -174,29 +153,33 @@ canvas{display:block;position:absolute;top:0;left:0}
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="brand">
-    <div class="brand-logo">
-      <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="11" r="3" stroke="#2563eb" stroke-width="1.5" fill="#0a1628"/>
-        <circle cx="4"  cy="4"  r="2.2" fill="#2563eb"/>
-        <circle cx="18" cy="4"  r="2.2" fill="#7c3aed"/>
-        <circle cx="4"  cy="18" r="2.2" fill="#16a34a"/>
-        <circle cx="18" cy="18" r="2.2" fill="#dc2626"/>
-        <line x1="6" y1="6"   x2="8.5" y2="8.5"   stroke="#2563eb" stroke-width="1.2"/>
-        <line x1="16" y1="6"  x2="13.5" y2="8.5"  stroke="#7c3aed" stroke-width="1.2"/>
-        <line x1="6" y1="16"  x2="8.5" y2="13.5"  stroke="#16a34a" stroke-width="1.2"/>
-        <line x1="16" y1="16" x2="13.5" y2="13.5" stroke="#dc2626" stroke-width="1.2"/>
-      </svg>
-    </div>
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="3" stroke="#2563eb" stroke-width="1.5" fill="#0a1628"/>
+      <circle cx="4"  cy="4"  r="2.2" fill="#2563eb"/>
+      <circle cx="18" cy="4"  r="2.2" fill="#7c3aed"/>
+      <circle cx="4"  cy="18" r="2.2" fill="#16a34a"/>
+      <circle cx="18" cy="18" r="2.2" fill="#dc2626"/>
+      <line x1="6" y1="6"   x2="8.5" y2="8.5"   stroke="#2563eb" stroke-width="1.2"/>
+      <line x1="16" y1="6"  x2="13.5" y2="8.5"  stroke="#7c3aed" stroke-width="1.2"/>
+      <line x1="6" y1="16"  x2="8.5" y2="13.5"  stroke="#16a34a" stroke-width="1.2"/>
+      <line x1="16" y1="16" x2="13.5" y2="13.5" stroke="#dc2626" stroke-width="1.2"/>
+    </svg>
     <div class="brand-name">Nirsa i2 <span>— Red de Investigación</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <span class="save-ind" id="save-ind"></span>
+    <span id="save-ind"></span>
     <div class="conf-badge">⚠ CONFIDENCIAL</div>
   </div>
 </div>
 
+<!-- CASE TABS BAR -->
+<div class="casebar" id="casebar">
+  <div class="casebar-empty" id="casebar-empty">Cargando casos...</div>
+  <div class="case-add-btn" title="Nuevo caso" onclick="openNewCaseModal()">＋</div>
+</div>
+
 <!-- STATS -->
-<div class="statsbar">
+<div class="statsbar" id="statsbar" style="display:none">
   <div class="stat"><span class="stat-n" id="st-emp" style="color:#60a5fa">0</span><span class="stat-l">Emp. Nirsa</span></div>
   <div class="stat"><span class="stat-n" id="st-fin" style="color:#a78bfa">0</span><span class="stat-l">Fam. Interno</span></div>
   <div class="stat"><span class="stat-n" id="st-fex" style="color:#4ade80">0</span><span class="stat-l">Fam. Externo</span></div>
@@ -206,24 +189,35 @@ canvas{display:block;position:absolute;top:0;left:0}
 </div>
 
 <!-- TOOLBAR -->
-<div class="toolbar">
+<div class="toolbar" id="toolbar" style="display:none">
   <input type="text" id="search" placeholder="🔍  Buscar persona..." oninput="filterSidebar(this.value)">
   <div class="sep"></div>
-  <button class="b-emp" onclick="openModal('emp')">+ Empleado Nirsa</button>
-  <button class="b-fin" onclick="openModal('fin')">+ Fam. Interno</button>
-  <button class="b-fex" onclick="openModal('fex')">+ Fam. Externo</button>
+  <button class="b-emp" onclick="openModal('emp')">+ Empleado</button>
+  <button class="b-fin" onclick="openModal('fin')">+ F.Interno</button>
+  <button class="b-fex" onclick="openModal('fex')">+ F.Externo</button>
   <button class="b-ext" onclick="openModal('ext')">+ Sospechoso</button>
-  <button class="b-lnk" onclick="openModal('lnk')">⬡ Agregar Vínculo</button>
+  <button class="b-lnk" onclick="openModal('lnk')">⬡ Vínculo</button>
   <div class="sep"></div>
   <button onclick="forceLayout()">⚛ Auto-organizar</button>
-  <button onclick="exportPNG()">↓ Exportar PNG</button>
+  <button onclick="exportPNG()">↓ PNG</button>
 </div>
 
 <!-- WORKSPACE -->
-<div class="workspace">
+<div class="workspace" id="workspace">
+
+  <!-- NO CASE SELECTED -->
+  <div class="no-case" id="no-case-screen">
+    <svg width="56" height="56" viewBox="0 0 48 48" fill="none" opacity=".25">
+      <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/>
+      <path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <h2>Sin caso activo</h2>
+    <p>Crea un nuevo caso con el botón <strong style="color:var(--text2)">＋</strong> en la barra de arriba para comenzar a mapear una red.</p>
+    <button class="b-confirm" style="padding:8px 20px;font-size:12px" onclick="openNewCaseModal()">＋ Crear primer caso</button>
+  </div>
 
   <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar" style="display:none">
     <div class="sb-head"><span>Personas <span id="n-count" style="color:var(--text2)">0</span></span></div>
     <div class="sb-filters">
       <div class="sf on" id="f-all" onclick="setFilter('all')">Todos</div>
@@ -236,7 +230,7 @@ canvas{display:block;position:absolute;top:0;left:0}
   </div>
 
   <!-- CANVAS -->
-  <div class="canvas-wrap" id="canvas-wrap">
+  <div class="canvas-wrap" id="canvas-wrap" style="display:none">
     <canvas id="cv"></canvas>
     <div class="empty-cv" id="empty-cv">
       <svg width="52" height="52" viewBox="0 0 48 48" fill="none" opacity=".25">
@@ -244,14 +238,14 @@ canvas{display:block;position:absolute;top:0;left:0}
         <circle cx="24" cy="13" r="4" stroke="currentColor" stroke-width="2"/>
         <path d="M8 44c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <div>Agrega personas y vínculos para<br>construir el mapa de la red.</div>
+      <div>Agrega personas y vínculos<br>para construir el mapa.</div>
     </div>
-    <div class="group-hint" id="group-hint">Red reorganizada por grupos</div>
+    <div class="group-hint" id="group-hint">Red reorganizada</div>
     <div class="zoom-label" id="zoom-label">100%</div>
     <div class="zoom-ctrl">
-      <button onclick="zoom(1.25)" title="Acercar">＋</button>
-      <button onclick="zoom(0.8)"  title="Alejar">－</button>
-      <button onclick="fitAll()"   title="Ver todo" style="font-size:12px">⊞</button>
+      <button onclick="zoomBy(1.25)" title="Acercar">＋</button>
+      <button onclick="zoomBy(0.8)"  title="Alejar">－</button>
+      <button onclick="fitAll()"     title="Ver todo" style="font-size:12px">⊞</button>
       <button onclick="resetLayout()" title="Reorganizar" style="font-size:12px">⟳</button>
     </div>
     <div id="minimap">
@@ -261,34 +255,17 @@ canvas{display:block;position:absolute;top:0;left:0}
   </div>
 
   <!-- DETAIL PANEL -->
-  <div class="detail" id="detail-panel">
+  <div class="detail" id="detail-panel" style="display:none">
     <div class="det-head">
-      <div id="d-face-wrap">
-        <div class="det-ini" style="background:var(--bg3);color:var(--text3)">?</div>
-      </div>
+      <div id="d-face-wrap"><div class="det-ini" style="background:var(--bg3);color:var(--text3)">?</div></div>
       <div class="det-name" id="d-name">Selecciona un nodo</div>
       <div id="d-type">—</div>
     </div>
-    <div class="det-section">
-      <div class="det-lbl">Área / Info</div>
-      <div class="det-val" id="d-info">—</div>
-    </div>
-    <div class="det-section">
-      <div class="det-lbl">Cédula / ID</div>
-      <div class="det-val mono" id="d-id">—</div>
-    </div>
-    <div class="det-section">
-      <div class="det-lbl">Nivel de Riesgo</div>
-      <div id="d-risk">—</div>
-    </div>
-    <div class="det-section">
-      <div class="det-lbl">Notas del Caso</div>
-      <div class="det-val" id="d-notes" style="line-height:1.6;font-size:10px">—</div>
-    </div>
-    <div class="det-section">
-      <div class="det-lbl">Vínculos (<span id="d-lc">0</span>)</div>
-      <div id="d-links" style="padding-top:4px">—</div>
-    </div>
+    <div class="det-section"><div class="det-lbl">Área / Info</div><div class="det-val" id="d-info">—</div></div>
+    <div class="det-section"><div class="det-lbl">Cédula / ID</div><div class="det-val mono" id="d-id">—</div></div>
+    <div class="det-section"><div class="det-lbl">Nivel de Riesgo</div><div id="d-risk">—</div></div>
+    <div class="det-section"><div class="det-lbl">Notas del Caso</div><div class="det-val" id="d-notes" style="line-height:1.6;font-size:10px">—</div></div>
+    <div class="det-section"><div class="det-lbl">Vínculos (<span id="d-lc">0</span>)</div><div id="d-links" style="padding-top:4px">—</div></div>
     <div id="d-btns" class="det-btn-wrap" style="display:none">
       <button onclick="editSel()">✏ Editar persona</button>
       <button class="b-lnk" onclick="openModal('lnk')">+ Vínculo desde aquí</button>
@@ -297,18 +274,18 @@ canvas{display:block;position:absolute;top:0;left:0}
 </div>
 
 <!-- LEGEND -->
-<div class="legendbar">
+<div class="legendbar" id="legendbar" style="display:none">
   <span style="font-weight:700;color:var(--text2);margin-right:2px">Nodos:</span>
-  <span class="leg"><span class="leg-dot" style="background:#0a1628;border:1.5px solid #2563eb"></span>Emp. Nirsa</span>
-  <span class="leg"><span class="leg-dot" style="background:#120a28;border:1.5px solid #7c3aed"></span>Fam. Interno</span>
-  <span class="leg"><span class="leg-dot" style="background:#0a1a0a;border:1.5px solid #16a34a"></span>Fam. Externo</span>
+  <span class="leg"><span class="leg-dot" style="background:#0a1628;border:1.5px solid #2563eb"></span>Emp.</span>
+  <span class="leg"><span class="leg-dot" style="background:#120a28;border:1.5px solid #7c3aed"></span>F.Interno</span>
+  <span class="leg"><span class="leg-dot" style="background:#0a1a0a;border:1.5px solid #16a34a"></span>F.Externo</span>
   <span class="leg"><span class="leg-dot" style="background:#1a0a0a;border:1.5px solid #dc2626"></span>Sospechoso</span>
   <span style="border-left:1px solid var(--border2);padding-left:10px;margin-left:4px;font-weight:700;color:var(--text2)">Vínculos:</span>
-  <span class="leg"><span class="leg-line" style="background:var(--lnk-conyuge)"></span>Cónyuge</span>
-  <span class="leg"><span class="leg-line" style="background:var(--lnk-hijo)"></span>Hijo/Padre</span>
-  <span class="leg"><span class="leg-line" style="background:var(--lnk-hermano)"></span>Hermano/a</span>
-  <span class="leg"><span class="leg-line" style="background:var(--lnk-delictivo);"></span>Delictivo</span>
-  <span class="leg"><span class="leg-line" style="background:var(--lnk-financiero)"></span>Financiero</span>
+  <span class="leg"><span class="leg-line" style="background:#a78bfa"></span>Cónyuge</span>
+  <span class="leg"><span class="leg-line" style="background:#34d399"></span>Hijo/Padre</span>
+  <span class="leg"><span class="leg-line" style="background:#fbbf24"></span>Hermano/a</span>
+  <span class="leg"><span class="leg-line" style="background:#f87171"></span>Delictivo</span>
+  <span class="leg"><span class="leg-line" style="background:#38bdf8"></span>Financiero</span>
   <span style="border-left:1px solid var(--border2);padding-left:10px;margin-left:4px;font-weight:700;color:var(--text2)">Riesgo:</span>
   <span class="leg"><span class="leg-circle" style="background:#ef4444"></span>Alto</span>
   <span class="leg"><span class="leg-circle" style="background:#f59e0b"></span>Medio</span>
@@ -319,59 +296,9 @@ canvas{display:block;position:absolute;top:0;left:0}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════════ DATA ═══════════════ */
-const REL = {
-  conyuge:    {color:'#a78bfa',dash:false,w:2.5,label:'Cónyuge',      bg:'#2e1065',tc:'#c4b5fd'},
-  hijo:       {color:'#34d399',dash:false,w:2.5,label:'Hijo/Padre',   bg:'#064e3b',tc:'#6ee7b7'},
-  hermano:    {color:'#fbbf24',dash:false,w:2,  label:'Hermano/a',    bg:'#78350f',tc:'#fde68a'},
-  primo:      {color:'#fb923c',dash:false,w:2,  label:'Primo/Tío',    bg:'#7c2d12',tc:'#fed7aa'},
-  delictivo:  {color:'#f87171',dash:true, w:3,  label:'Delictivo',    bg:'#7f1d1d',tc:'#fecaca'},
-  financiero: {color:'#38bdf8',dash:true, w:2.5,label:'Financiero',   bg:'#0c4a6e',tc:'#bae6fd'},
-  contacto:   {color:'#94a3b8',dash:true, w:1.5,label:'Contacto',     bg:'#1e293b',tc:'#cbd5e1'},
-  otro:       {color:'#64748b',dash:false,w:1.5,label:'Otro',         bg:'#1e293b',tc:'#94a3b8'},
-};
-const RISK = {
-  high:{color:'#ef4444',label:'ALTO',   bg:'#7f1d1d',tc:'#fca5a5'},
-  med: {color:'#f59e0b',label:'MEDIO',  bg:'#78350f',tc:'#fde68a'},
-  low: {color:'#22c55e',label:'BAJO',   bg:'#064e3b',tc:'#86efac'},
-};
-const TMETA = {
-  emp:{label:'Empleado Nirsa',   border:'#2563eb',bg:'#0a1628',tc:'#60a5fa',ring:'#3b82f6'},
-  fin:{label:'Familiar Interno', border:'#7c3aed',bg:'#120a28',tc:'#a78bfa',ring:'#8b5cf6'},
-  fex:{label:'Familiar Externo', border:'#16a34a',bg:'#0a1a0a',tc:'#4ade80',ring:'#22c55e'},
-  ext:{label:'Sospechoso',       border:'#dc2626',bg:'#1a0a0a',tc:'#f87171',ring:'#ef4444'},
-};
-const FORM_META = {
-  emp:{title:'Empleado Nirsa',    hint:'Trabaja actualmente en Nirsa S.A.',              infoLbl:'Área / Departamento'},
-  fin:{title:'Familiar Interno',  hint:'Familiar que TAMBIÉN trabaja en Nirsa.',         infoLbl:'Área / Departamento'},
-  fex:{title:'Familiar Externo',  hint:'Familiar que NO trabaja en Nirsa.',              infoLbl:'Ocupación / Domicilio'},
-  ext:{title:'Sospechoso',        hint:'Persona externa: delincuente, cómplice, etc.',   infoLbl:'Alias / Organización'},
-};
-
-let nodes=[], links=[], nextId=1;
-let sel=null, sbFilter='all';
-let pos={}, imgCache={};
-let drag=null, dragStart={x:0,y:0}, dragMoved=false;
-let scale=1, offsetX=0, offsetY=0;
-let panStart=null, isPanning=false;
-
-/* ═══════════════ NODE CARD SIZES ═══════════════ */
-const CARD = {
-  w: 140,       // card width
-  h: 100,       // card height (photo area)
-  photoSize: 54,
-  infoH: 56,    // info block below card
-  totalH: function(n){ return this.h + this.infoH + (n.cedula?14:0) + (n.risk?14:0); },
-  rx: 6,
-};
-
-/* ═══════════════ HELPERS ═══════════════ */
-const nk = id => 'n'+id;
-const ini = n => (n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?';
-const rc  = r => RISK[r]?.color||'#94a3b8';
-const setSI = t => { document.getElementById('save-ind').textContent = t; };
-
-/* ═══════════════ FIREBASE ═══════════════ */
+/* ══════════════════════════════════════════════
+   FIREBASE INIT
+══════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey:            "AIzaSyDWHdPUifY_P_Zl49DpLLF65WHhM8CxK8c",
   authDomain:        "nirsa-i2-2-dtb.firebaseapp.com",
@@ -384,124 +311,278 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const ROOT = 'nirsa_i2'; // cambia esto si quieres múltiples bases en el mismo proyecto
 
+/* ══════════════════════════════════════════════
+   CONSTANTS
+══════════════════════════════════════════════ */
+const REL = {
+  conyuge:    {color:'#a78bfa',dash:false,w:2.5,label:'Cónyuge',    bg:'#2e1065',tc:'#c4b5fd'},
+  hijo:       {color:'#34d399',dash:false,w:2.5,label:'Hijo/Padre', bg:'#064e3b',tc:'#6ee7b7'},
+  hermano:    {color:'#fbbf24',dash:false,w:2,  label:'Hermano/a',  bg:'#78350f',tc:'#fde68a'},
+  primo:      {color:'#fb923c',dash:false,w:2,  label:'Primo/Tío',  bg:'#7c2d12',tc:'#fed7aa'},
+  delictivo:  {color:'#f87171',dash:true, w:3,  label:'Delictivo',  bg:'#7f1d1d',tc:'#fecaca'},
+  financiero: {color:'#38bdf8',dash:true, w:2.5,label:'Financiero', bg:'#0c4a6e',tc:'#bae6fd'},
+  contacto:   {color:'#94a3b8',dash:true, w:1.5,label:'Contacto',   bg:'#1e293b',tc:'#cbd5e1'},
+  otro:       {color:'#64748b',dash:false,w:1.5,label:'Otro',       bg:'#1e293b',tc:'#94a3b8'},
+};
+const RISK = {
+  high:{color:'#ef4444',label:'ALTO',  bg:'#7f1d1d',tc:'#fca5a5'},
+  med: {color:'#f59e0b',label:'MEDIO', bg:'#78350f',tc:'#fde68a'},
+  low: {color:'#22c55e',label:'BAJO',  bg:'#064e3b',tc:'#86efac'},
+};
+const TMETA = {
+  emp:{label:'Empleado Nirsa',   border:'#2563eb',bg:'#0a1628',tc:'#60a5fa',ring:'#3b82f6'},
+  fin:{label:'Familiar Interno', border:'#7c3aed',bg:'#120a28',tc:'#a78bfa',ring:'#8b5cf6'},
+  fex:{label:'Familiar Externo', border:'#16a34a',bg:'#0a1a0a',tc:'#4ade80',ring:'#22c55e'},
+  ext:{label:'Sospechoso',       border:'#dc2626',bg:'#1a0a0a',tc:'#f87171',ring:'#ef4444'},
+};
+const FORM_META = {
+  emp:{title:'Empleado Nirsa',    hint:'Trabaja actualmente en Nirsa S.A.',             infoLbl:'Área / Departamento',  btn:'b-emp'},
+  fin:{title:'Familiar Interno',  hint:'Familiar que TAMBIÉN trabaja en Nirsa.',        infoLbl:'Área / Departamento',  btn:'b-fin'},
+  fex:{title:'Familiar Externo',  hint:'Familiar que NO trabaja en Nirsa.',             infoLbl:'Ocupación / Domicilio',btn:'b-fex'},
+  ext:{title:'Sospechoso',        hint:'Persona externa: delincuente, cómplice, etc.',  infoLbl:'Alias / Organización', btn:'b-ext'},
+};
+const CARD = { w:140, h:100, photoSize:54, rx:6 };
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let currentCaseId = null;   // active case firebase key
+let cases = {};             // { caseId: {name, createdAt} }
+let nodes = [], links = [], nextId = 1;
+let sel = null, sbFilter = 'all';
+let pos = {}, imgCache = {};
+let drag = null, dragStart = {x:0,y:0}, dragMoved = false;
+let scale = 1, offsetX = 0, offsetY = 0;
+let panStart = null, isPanning = false;
+let _caseListener = null;   // firebase listener ref for current case
 let _saveTimer = null;
 
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+const nk  = id => 'n' + id;
+const ini = n  => (n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?';
+const rc  = r  => RISK[r]?.color || '#94a3b8';
 function setSI(t){ document.getElementById('save-ind').textContent = t; }
-
-/* Guarda en Firebase con debounce de 800ms para no saturar en ediciones rápidas */
-function persist(){
-  setSI('⏳ guardando…');
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(()=>{
-    const payload = {
-      nodes: nodes,
-      links: links,
-      nextId: nextId,
-      updatedAt: Date.now()
-    };
-    db.ref(ROOT).set(payload)
-      .then(()=>{ setSI('☁ guardado'); setTimeout(()=>setSI(''),2500); })
-      .catch(err=>{ setSI('⚠ error: '+err.code); console.error(err); });
-  }, 800);
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
-/* Carga desde Firebase UNA vez al iniciar, luego escucha cambios en tiempo real */
-function load(){
+/* ══════════════════════════════════════════════
+   CASE MANAGEMENT
+══════════════════════════════════════════════ */
+function initCasesListener(){
   setSI('⏳ conectando…');
-  db.ref(ROOT).on('value', snapshot=>{
-    const d = snapshot.val();
+  db.ref('cases').on('value', snap => {
+    cases = snap.val() || {};
+    renderCaseTabs();
+    // If active case was deleted remotely, deactivate
+    if(currentCaseId && !cases[currentCaseId]){
+      currentCaseId = null;
+      showWorkspace(false);
+    }
+  });
+  db.ref('.info/connected').on('value', snap=>{
+    setSI(snap.val() ? '🟢 en línea' : '🔴 sin conexión');
+    setTimeout(()=>setSI(''), 3000);
+  });
+}
+
+function renderCaseTabs(){
+  const bar = document.getElementById('casebar');
+  const addBtn = bar.querySelector('.case-add-btn');
+  const empty = document.getElementById('casebar-empty');
+  // Remove old tabs (keep add button)
+  bar.querySelectorAll('.case-tab').forEach(el=>el.remove());
+  const caseList = Object.entries(cases);
+  if(!caseList.length){
+    empty.style.display='block';
+    empty.textContent='No hay casos — crea uno con ＋';
+  } else {
+    empty.style.display='none';
+    caseList.forEach(([id, c])=>{
+      const tab = document.createElement('div');
+      tab.className = 'case-tab' + (id===currentCaseId?' active':'');
+      tab.innerHTML = `<span onclick="switchCase('${id}')">${c.name||'Sin nombre'}</span><span class="case-close" onclick="confirmDeleteCase('${id}')" title="Eliminar caso">×</span>`;
+      bar.insertBefore(tab, addBtn);
+    });
+  }
+}
+
+function switchCase(caseId){
+  if(caseId === currentCaseId) return;
+  // Detach old listener
+  if(_caseListener && currentCaseId){
+    db.ref('cases/'+currentCaseId+'/data').off('value', _caseListener);
+  }
+  currentCaseId = caseId;
+  nodes=[]; links=[]; nextId=1; pos={}; imgCache={}; sel=null;
+  renderCaseTabs();
+  showWorkspace(true);
+  setSI('⏳ cargando…');
+
+  _caseListener = db.ref('cases/'+caseId+'/data').on('value', snap=>{
+    const d = snap.val();
     if(d){
       nodes   = d.nodes   || [];
       links   = d.links   || [];
       nextId  = d.nextId  || 1;
-      setSI('☁ sincronizado');
-      setTimeout(()=>setSI(''),2000);
     } else {
-      // Base vacía — primera vez
       nodes=[]; links=[]; nextId=1;
-      setSI('☁ base nueva');
-      setTimeout(()=>setSI(''),2500);
     }
+    imgCache={};
     preloadImages();
     updateStats();
     renderSidebar();
-    resizeAndLayout();
+    updateDetail(null);
+    if(!Object.keys(pos).length && nodes.length){ autoLayout(); fitAll(); }
+    else { resizeCanvas(); drawGraph(); }
+    setSI('☁ sincronizado');
+    setTimeout(()=>setSI(''),2000);
   }, err=>{
-    setSI('⚠ sin conexión');
-    console.error('Firebase error:', err);
-    // Fallback a localStorage si Firebase falla
-    try{
-      const raw=localStorage.getItem('nirsa_i2_v2');
-      if(raw){ const d=JSON.parse(raw); nodes=d.nodes||[]; links=d.links||[]; nextId=d.nextId||1; preloadImages(); }
-    }catch(e){}
-    updateStats(); renderSidebar(); resizeAndLayout();
-  });
-
-  // Indicador de conexión online/offline
-  db.ref('.info/connected').on('value', snap=>{
-    if(snap.val()===true) setSI('🟢 en línea');
-    else setSI('🔴 sin conexión');
-    setTimeout(()=>setSI(''),3000);
+    setSI('⚠ error: '+err.code);
   });
 }
+
+function persist(){
+  if(!currentCaseId) return;
+  setSI('⏳ guardando…');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(()=>{
+    db.ref('cases/'+currentCaseId+'/data').set({ nodes, links, nextId, updatedAt: Date.now() })
+      .then(()=>{ setSI('☁ guardado'); setTimeout(()=>setSI(''),2500); })
+      .catch(err=>{ setSI('⚠ error'); console.error(err); });
+  }, 800);
+}
+
+function showWorkspace(show){
+  const els = ['statsbar','toolbar','sidebar','canvas-wrap','detail-panel','legendbar'];
+  els.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=show?'':'none'; });
+  document.getElementById('no-case-screen').style.display = show ? 'none' : 'flex';
+  if(show) setTimeout(()=>resizeCanvas(), 50);
+}
+
+function openNewCaseModal(){
+  document.getElementById('modal-container').innerHTML=`
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>📁 Nuevo Caso</h3>
+      <p class="modal-hint">Cada caso es una red independiente con sus propias personas y vínculos.</p>
+      <div><label>Nombre del caso *</label><input type="text" id="nc-name" placeholder="Ej: Caso Familia Romero 2025" autofocus></div>
+      <div><label>Descripción (opcional)</label><input type="text" id="nc-desc" placeholder="Breve descripción del caso..."></div>
+      <div class="modal-btns">
+        <button onclick="closeModal()">Cancelar</button>
+        <button class="b-confirm" onclick="createCase()">Crear caso</button>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>document.getElementById('nc-name')?.focus(),80);
+}
+
+function createCase(){
+  const name = document.getElementById('nc-name').value.trim();
+  if(!name){ showToast('El nombre es obligatorio'); return; }
+  const desc = document.getElementById('nc-desc').value.trim();
+  const newRef = db.ref('cases').push();
+  newRef.set({ name, desc, createdAt: Date.now() })
+    .then(()=>{ closeModal(); switchCase(newRef.key); showToast('Caso creado ✓'); })
+    .catch(err=>{ showToast('Error: '+err.message); });
+}
+
+function confirmDeleteCase(caseId){
+  const c = cases[caseId];
+  if(!c) return;
+  document.getElementById('modal-container').innerHTML=`
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>🗑 Eliminar caso</h3>
+      <p class="modal-hint" style="border-left-color:#dc2626">¿Eliminar el caso <strong style="color:var(--text)">"${c.name}"</strong>? Se borrarán todas sus personas y vínculos. Esta acción no se puede deshacer.</p>
+      <div class="modal-btns">
+        <button onclick="closeModal()">Cancelar</button>
+        <button class="b-danger" onclick="deleteCase('${caseId}')">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function deleteCase(caseId){
+  if(_caseListener && caseId===currentCaseId){
+    db.ref('cases/'+caseId+'/data').off('value',_caseListener);
+    _caseListener=null; currentCaseId=null;
+    showWorkspace(false);
+  }
+  db.ref('cases/'+caseId).remove()
+    .then(()=>{ closeModal(); showToast('Caso eliminado'); })
+    .catch(err=>{ showToast('Error: '+err.message); });
+}
+
+/* ══════════════════════════════════════════════
+   IMAGES
+══════════════════════════════════════════════ */
 function preloadImages(){
-  nodes.forEach(n=>{ if(n.photo&&!imgCache[n.id]){ const img=new Image(); img.onload=()=>{ imgCache[n.id]=img; drawGraph(); }; img.src=n.photo; } });
+  nodes.forEach(n=>{
+    if(n.photo && !imgCache[n.id]){
+      const img = new Image();
+      img.onload = ()=>{ imgCache[n.id]=img; drawGraph(); };
+      img.src = n.photo;
+    }
+  });
 }
 
-/* ═══════════════ STATS ═══════════════ */
+/* ══════════════════════════════════════════════
+   STATS
+══════════════════════════════════════════════ */
 function updateStats(){
-  document.getElementById('st-emp').textContent=nodes.filter(n=>n.type==='emp').length;
-  document.getElementById('st-fin').textContent=nodes.filter(n=>n.type==='fin').length;
-  document.getElementById('st-fex').textContent=nodes.filter(n=>n.type==='fex').length;
-  document.getElementById('st-ext').textContent=nodes.filter(n=>n.type==='ext').length;
-  document.getElementById('st-lnk').textContent=links.length;
-  document.getElementById('st-hi').textContent=nodes.filter(n=>n.risk==='high').length;
-  document.getElementById('n-count').textContent=nodes.length;
+  document.getElementById('st-emp').textContent = nodes.filter(n=>n.type==='emp').length;
+  document.getElementById('st-fin').textContent = nodes.filter(n=>n.type==='fin').length;
+  document.getElementById('st-fex').textContent = nodes.filter(n=>n.type==='fex').length;
+  document.getElementById('st-ext').textContent = nodes.filter(n=>n.type==='ext').length;
+  document.getElementById('st-lnk').textContent = links.length;
+  document.getElementById('st-hi').textContent  = nodes.filter(n=>n.risk==='high').length;
+  document.getElementById('n-count').textContent = nodes.length;
 }
 
-/* ═══════════════ SIDEBAR ═══════════════ */
+/* ══════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════ */
 function setFilter(f){
-  sbFilter=f;
+  sbFilter = f;
   ['all','emp','fin','fex','ext'].forEach(x=>document.getElementById('f-'+x)?.classList.toggle('on',x===f));
   renderSidebar(document.getElementById('search').value);
 }
 function filterSidebar(q){ renderSidebar(q); }
 function renderSidebar(q=''){
-  const list=document.getElementById('n-list');
-  let fl=nodes.filter(n=>n.name.toLowerCase().includes(q.toLowerCase()));
-  if(sbFilter!=='all') fl=fl.filter(n=>n.type===sbFilter);
+  const list = document.getElementById('n-list');
+  let fl = nodes.filter(n=>n.name.toLowerCase().includes(q.toLowerCase()));
+  if(sbFilter!=='all') fl = fl.filter(n=>n.type===sbFilter);
   if(!fl.length){ list.innerHTML=`<div class="empty-sb">${nodes.length?'Sin resultados.':'Agrega personas<br>para comenzar.'}</div>`; return; }
-  list.innerHTML=fl.map(n=>{
-    const m=TMETA[n.type]||TMETA.emp;
-    const face=n.photo
-      ?`<img src="${n.photo}" class="n-avatar" style="border:2px solid ${m.border}">`
-      :`<div class="n-ini" style="background:${m.bg};color:${m.tc};border:2px solid ${m.border}">${ini(n.name)}</div>`;
-    return`<div class="n-item${sel===n.id?' active':''}" onclick="selectNode(${n.id})">
+  list.innerHTML = fl.map(n=>{
+    const m = TMETA[n.type]||TMETA.emp;
+    const face = n.photo
+      ? `<img src="${n.photo}" class="n-avatar" style="border:2px solid ${m.border}">`
+      : `<div class="n-ini" style="background:${m.bg};color:${m.tc};border:2px solid ${m.border}">${ini(n.name)}</div>`;
+    return `<div class="n-item${sel===n.id?' active':''}" onclick="selectNode(${n.id})">
       ${face}
-      <div class="n-info">
-        <div class="n-name-sb">${n.name}</div>
-        <div class="n-sub-sb">${m.label}</div>
-      </div>
+      <div class="n-info"><div class="n-name-sb">${n.name}</div><div class="n-sub-sb">${m.label}</div></div>
       <div class="risk-dot" style="background:${rc(n.risk)}"></div>
     </div>`;
   }).join('');
 }
 
-/* ═══════════════ SELECTION ═══════════════ */
+/* ══════════════════════════════════════════════
+   SELECTION & DETAIL
+══════════════════════════════════════════════ */
 function selectNode(id){
-  sel=id;
-  renderSidebar(document.getElementById('search').value);
-  updateDetail(id);
-  drawGraph();
+  sel=id; renderSidebar(document.getElementById('search').value); updateDetail(id); drawGraph();
 }
 function editSel(){ if(sel!==null){ const n=nodes.find(x=>x.id===sel); if(n) openModal(n.type,sel); } }
 
-/* ═══════════════ DETAIL PANEL ═══════════════ */
 function updateDetail(id){
-  const n=nodes.find(x=>x.id===id);
-  const fw=document.getElementById('d-face-wrap');
+  const n = nodes.find(x=>x.id===id);
+  const fw = document.getElementById('d-face-wrap');
   if(!n){
     fw.innerHTML=`<div class="det-ini" style="background:var(--bg3);color:var(--text3)">?</div>`;
     document.getElementById('d-name').textContent='Selecciona un nodo';
@@ -510,33 +591,32 @@ function updateDetail(id){
     document.getElementById('d-risk').innerHTML='—';
     document.getElementById('d-links').innerHTML='—';
     document.getElementById('d-lc').textContent='0';
-    document.getElementById('d-btns').style.display='none';
-    return;
+    document.getElementById('d-btns').style.display='none'; return;
   }
-  const m=TMETA[n.type]||TMETA.emp;
-  fw.innerHTML=n.photo
-    ?`<img src="${n.photo}" class="det-avatar" style="border:2px solid ${m.border}">`
-    :`<div class="det-ini" style="background:${m.bg};color:${m.tc};border:2px solid ${m.border}">${ini(n.name)}</div>`;
-  document.getElementById('d-name').textContent=n.name;
-  document.getElementById('d-type').innerHTML=`<span class="det-type-pill" style="background:${m.bg};color:${m.tc};border:1px solid ${m.border}">${m.label}</span>`;
-  document.getElementById('d-info').textContent=n.info||'—';
-  document.getElementById('d-id').textContent=n.cedula||'—';
-  const rr=RISK[n.risk]||{color:'#94a3b8',label:'—',bg:'#1e293b',tc:'#94a3b8'};
-  document.getElementById('d-risk').innerHTML=`<span style="display:inline-flex;align-items:center;gap:6px;background:${rr.bg};color:${rr.tc};padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid ${rr.color}33"><span style="width:7px;height:7px;border-radius:50%;background:${rr.color}"></span>${rr.label}</span>`;
-  document.getElementById('d-notes').textContent=n.notes||'—';
+  const m = TMETA[n.type]||TMETA.emp;
+  fw.innerHTML = n.photo
+    ? `<img src="${n.photo}" class="det-avatar" style="border:2px solid ${m.border}">`
+    : `<div class="det-ini" style="background:${m.bg};color:${m.tc};border:2px solid ${m.border}">${ini(n.name)}</div>`;
+  document.getElementById('d-name').textContent = n.name;
+  document.getElementById('d-type').innerHTML = `<span style="background:${m.bg};color:${m.tc};padding:2px 8px;border-radius:3px;font-size:9px;font-weight:700;border:1px solid ${m.border};text-transform:uppercase">${m.label}</span>`;
+  document.getElementById('d-info').textContent  = n.info||'—';
+  document.getElementById('d-id').textContent    = n.cedula||'—';
+  document.getElementById('d-notes').textContent = n.notes||'—';
+  const rr = RISK[n.risk]||{color:'#94a3b8',label:'—',bg:'#1e293b',tc:'#94a3b8'};
+  document.getElementById('d-risk').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:${rr.bg};color:${rr.tc};padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;border:1px solid ${rr.color}44"><span style="width:7px;height:7px;border-radius:50%;background:${rr.color}"></span>${rr.label}</span>`;
   document.getElementById('d-btns').style.display='flex';
-  const sk=nk(id);
-  const ml=links.filter(l=>l.a===sk||l.b===sk);
-  document.getElementById('d-lc').textContent=ml.length;
+  const sk = nk(id);
+  const ml = links.filter(l=>l.a===sk||l.b===sk);
+  document.getElementById('d-lc').textContent = ml.length;
   if(!ml.length){ document.getElementById('d-links').innerHTML=`<span style="color:var(--text3);font-size:11px">Sin vínculos</span>`; return; }
-  document.getElementById('d-links').innerHTML=ml.map(l=>{
-    const ok=l.a===sk?l.b:l.a;
-    const o=nodes.find(x=>nk(x.id)===ok); if(!o)return'';
-    const om=TMETA[o.type]||TMETA.emp; const r=REL[l.type]||REL.otro;
-    const face=imgCache[o.id]
-      ?`<img src="${o.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:3px">`
-      :`${ini(o.name)}`;
-    return`<div class="conn-item">
+  document.getElementById('d-links').innerHTML = ml.map(l=>{
+    const ok = l.a===sk?l.b:l.a;
+    const o = nodes.find(x=>nk(x.id)===ok); if(!o)return'';
+    const om=TMETA[o.type]||TMETA.emp, r=REL[l.type]||REL.otro;
+    const face = imgCache[o.id]
+      ? `<img src="${o.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:3px">`
+      : ini(o.name);
+    return `<div class="conn-item">
       <div class="conn-mini" style="background:${om.bg};color:${om.tc};border:1px solid ${om.border}">${face}</div>
       <span style="flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2)">${o.name.split(' ')[0]}</span>
       <span class="rel-pill" style="background:${r.bg};color:${r.tc};border:1px solid ${r.color}44">${r.label}</span>
@@ -544,552 +624,459 @@ function updateDetail(id){
   }).join('');
 }
 
-/* ═══════════════ LAYOUT ═══════════════ */
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
 function resetLayout(){ pos={}; autoLayout(); fitAll(); }
 
 function autoLayout(){
-  // Spread nodes generously — 280px spacing so cards never overlap
-  const SPACING=280;
-  const groups={ emp:[], fin:[], fex:[], ext:[] };
-  nodes.forEach(n=>{ (groups[n.type]||groups.emp).push(n); });
+  const SPACING = 280;
+  const groups = {emp:[],fin:[],fex:[],ext:[]};
+  nodes.forEach(n=>(groups[n.type]||groups.emp).push(n));
   const quad=[
-    {ox:-2,  oy:-2,  list:groups.emp},
-    {ox: 2,  oy:-2,  list:groups.fin},
-    {ox:-2,  oy: 2,  list:groups.fex},
-    {ox: 2,  oy: 2,  list:groups.ext},
+    {ox:-2,oy:-2,list:groups.emp},{ox:2,oy:-2,list:groups.fin},
+    {ox:-2,oy:2, list:groups.fex},{ox:2,oy:2, list:groups.ext},
   ];
   quad.forEach(q=>{
     q.list.forEach((n,i)=>{
-      const k=nk(n.id); if(pos[k]) return;
+      const k=nk(n.id); if(pos[k])return;
       const cols=Math.max(1,Math.ceil(Math.sqrt(q.list.length)));
       const col=i%cols, row=Math.floor(i/cols);
-      pos[k]={ x: q.ox*SPACING*Math.max(1,Math.ceil(Math.sqrt(q.list.length))/2) + (col-(cols-1)/2)*SPACING,
-               y: q.oy*SPACING*Math.max(1,Math.ceil(Math.sqrt(q.list.length))/2) + row*SPACING };
+      pos[k]={
+        x: q.ox*SPACING*Math.max(1,cols/2)+(col-(cols-1)/2)*SPACING,
+        y: q.oy*SPACING*Math.max(1,Math.ceil(q.list.length/cols)/2)+row*SPACING
+      };
     });
   });
 }
 
-// Force-directed layout — runs multiple iterations to untangle large networks
 function forceLayout(){
-  if(nodes.length<2){ showToast('Agrega más personas primero'); return; }
-  // Init positions if missing
+  if(nodes.length<2){showToast('Necesitas al menos 2 personas');return;}
   nodes.forEach((n,i)=>{
     const k=nk(n.id);
-    if(!pos[k]){ const a=2*Math.PI*i/nodes.length; pos[k]={x:Math.cos(a)*400, y:Math.sin(a)*400}; }
+    if(!pos[k]){const a=2*Math.PI*i/nodes.length;pos[k]={x:Math.cos(a)*400,y:Math.sin(a)*400};}
   });
-
-  const ITERS=180, REPULSE=28000, ATTRACT=0.04, IDEAL=300, DAMP=0.85;
+  const ITERS=180,REPULSE=28000,ATTRACT=0.04,IDEAL=300,DAMP=0.85;
   const vel={};
-  nodes.forEach(n=>{ vel[nk(n.id)]={x:0,y:0}; });
-
+  nodes.forEach(n=>{vel[nk(n.id)]={x:0,y:0};});
   for(let it=0;it<ITERS;it++){
     const force={};
-    nodes.forEach(n=>{ force[nk(n.id)]={x:0,y:0}; });
-
-    // Repulsion between all node pairs
+    nodes.forEach(n=>{force[nk(n.id)]={x:0,y:0};});
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
-        const ki=nk(nodes[i].id), kj=nk(nodes[j].id);
-        const pi=pos[ki], pj=pos[kj];
-        const dx=pi.x-pj.x, dy=pi.y-pj.y;
+        const ki=nk(nodes[i].id),kj=nk(nodes[j].id);
+        const pi=pos[ki],pj=pos[kj];
+        const dx=pi.x-pj.x,dy=pi.y-pj.y;
         const dist=Math.max(Math.sqrt(dx*dx+dy*dy),0.1);
         const f=REPULSE/(dist*dist);
-        const fx=f*dx/dist, fy=f*dy/dist;
-        force[ki].x+=fx; force[ki].y+=fy;
-        force[kj].x-=fx; force[kj].y-=fy;
+        const fx=f*dx/dist,fy=f*dy/dist;
+        force[ki].x+=fx;force[ki].y+=fy;force[kj].x-=fx;force[kj].y-=fy;
       }
     }
-
-    // Attraction along links
     links.forEach(l=>{
-      const pi=pos[l.a], pj=pos[l.b];
-      if(!pi||!pj) return;
-      const dx=pj.x-pi.x, dy=pj.y-pi.y;
+      const pi=pos[l.a],pj=pos[l.b];if(!pi||!pj)return;
+      const dx=pj.x-pi.x,dy=pj.y-pi.y;
       const dist=Math.max(Math.sqrt(dx*dx+dy*dy),0.1);
       const f=ATTRACT*(dist-IDEAL);
-      const fx=f*dx/dist, fy=f*dy/dist;
-      force[l.a].x+=fx; force[l.a].y+=fy;
-      force[l.b].x-=fx; force[l.b].y-=fy;
+      const fx=f*dx/dist,fy=f*dy/dist;
+      force[l.a].x+=fx;force[l.a].y+=fy;force[l.b].x-=fx;force[l.b].y-=fy;
     });
-
-    // Apply with damping
     nodes.forEach(n=>{
       const k=nk(n.id);
-      vel[k].x=(vel[k].x+force[k].x)*DAMP;
-      vel[k].y=(vel[k].y+force[k].y)*DAMP;
-      pos[k].x+=vel[k].x;
-      pos[k].y+=vel[k].y;
+      vel[k].x=(vel[k].x+force[k].x)*DAMP;vel[k].y=(vel[k].y+force[k].y)*DAMP;
+      pos[k].x+=vel[k].x;pos[k].y+=vel[k].y;
     });
   }
-
   fitAll();
-  const hint=document.getElementById('group-hint');
-  hint.classList.add('show'); setTimeout(()=>hint.classList.remove('show'),2500);
+  const h=document.getElementById('group-hint');h.classList.add('show');setTimeout(()=>h.classList.remove('show'),2500);
 }
 
 function fitAll(){
-  if(!nodes.length) return;
+  if(!nodes.length)return;
   const cw=document.getElementById('canvas-wrap');
-  const W=cw.offsetWidth, H=cw.offsetHeight;
+  const W=cw.offsetWidth,H=cw.offsetHeight;
   let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  nodes.forEach(n=>{ const p=pos[nk(n.id)]; if(!p)return;
-    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
-    maxX=Math.max(maxX,p.x+CARD.w); maxY=Math.max(maxY,p.y+CARD.h+80);
+  nodes.forEach(n=>{const p=pos[nk(n.id)];if(!p)return;
+    minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);
+    maxX=Math.max(maxX,p.x+CARD.w);maxY=Math.max(maxY,p.y+CARD.h+100);
   });
-  if(minX===Infinity) return;
+  if(minX===Infinity)return;
   const pad=60;
-  const scaleX=(W-pad*2)/(maxX-minX), scaleY=(H-pad*2)/(maxY-minY);
-  scale=Math.min(scaleX,scaleY,1.0);
-  offsetX=pad-(minX*scale);
-  offsetY=pad-(minY*scale);
-  updateZoomLabel();
-  drawGraph();
+  const sx=(W-pad*2)/(maxX-minX),sy=(H-pad*2)/(maxY-minY);
+  scale=Math.min(sx,sy,1.0);
+  offsetX=pad-minX*scale; offsetY=pad-minY*scale;
+  updateZoomLabel(); drawGraph();
 }
 
-function zoom(f){
+function zoomBy(f){
   const cw=document.getElementById('canvas-wrap');
-  const cx=cw.offsetWidth/2, cy=cw.offsetHeight/2;
-  const wBefore={x:(cx-offsetX)/scale, y:(cy-offsetY)/scale};
+  const cx=cw.offsetWidth/2,cy=cw.offsetHeight/2;
+  const wx=(cx-offsetX)/scale,wy=(cy-offsetY)/scale;
   scale=Math.max(0.08,Math.min(4,scale*f));
-  offsetX=cx-wBefore.x*scale;
-  offsetY=cy-wBefore.y*scale;
-  updateZoomLabel();
-  drawGraph();
+  offsetX=cx-wx*scale;offsetY=cy-wy*scale;
+  updateZoomLabel();drawGraph();
 }
 
 function updateZoomLabel(){
   const el=document.getElementById('zoom-label');
-  if(el) el.textContent=Math.round(scale*100)+'%';
+  if(el)el.textContent=Math.round(scale*100)+'%';
 }
 
 function exportPNG(){
   const cv=document.getElementById('cv');
   const a=document.createElement('a');
-  a.download='nirsa_red_'+new Date().toISOString().slice(0,10)+'.png';
-  a.href=cv.toDataURL('image/png');
-  a.click();
+  a.download='nirsa_red_'+Date.now()+'.png';
+  a.href=cv.toDataURL('image/png');a.click();
   showToast('PNG exportado ✓');
 }
 
-/* ═══════════════ DRAW ═══════════════ */
+/* ══════════════════════════════════════════════
+   DRAW
+══════════════════════════════════════════════ */
 function drawRR(ctx,x,y,w,h,r){
   ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
   ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
   ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
 }
-
-function worldToScreen(wx,wy){ return { x: wx*scale+offsetX, y: wy*scale+offsetY }; }
-function screenToWorld(sx,sy){ return { x: (sx-offsetX)/scale, y: (sy-offsetY)/scale }; }
-
-// Get the connection point on the edge of the card
-function cardEdge(p, tw, th, tx2, ty2){
-  const cx=p.x+CARD.w/2, cy=p.y+CARD.h/2;
-  const dx=tx2-cx, dy=ty2-cy;
-  const hw=CARD.w/2, hh=CARD.h/2;
-  if(Math.abs(dx/hw)>Math.abs(dy/hh)){ return{x:cx+(dx>0?hw:-hw), y:cy+dy*(hw/Math.abs(dx))}; }
-  else{ return{x:cx+dx*(hh/Math.abs(dy)), y:cy+(dy>0?hh:-hh)}; }
-}
+function screenToWorld(sx,sy){return{x:(sx-offsetX)/scale,y:(sy-offsetY)/scale};}
 
 function drawGraph(){
   const cv=document.getElementById('cv');
   const dpr=window.devicePixelRatio||1;
-  const W=cv.offsetWidth, H=cv.offsetHeight;
-  if(!W||!H) return;
-  cv.width=W*dpr; cv.height=H*dpr;
+  const W=cv.offsetWidth,H=cv.offsetHeight;
+  if(!W||!H)return;
+  cv.width=W*dpr;cv.height=H*dpr;
   const ctx=cv.getContext('2d');
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,W,H);
+  ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,H);
   document.getElementById('empty-cv').style.display=nodes.length?'none':'flex';
-
-  ctx.save();
-  ctx.translate(offsetX,offsetY);
-  ctx.scale(scale,scale);
-
+  ctx.save();ctx.translate(offsetX,offsetY);ctx.scale(scale,scale);
   const sk=sel!==null?nk(sel):null;
-  const NW=CARD.w, NH=CARD.h, NRX=CARD.rx;
+  const NW=CARD.w,NH=CARD.h;
 
-  // ── DRAW LINKS ──
+  // ── LINKS ──
   links.forEach(l=>{
-    const pa=pos[l.a], pb=pos[l.b]; if(!pa||!pb)return;
+    const pa=pos[l.a],pb=pos[l.b];if(!pa||!pb)return;
     const r=REL[l.type]||REL.otro;
-    const highlighted=sk&&(l.a===sk||l.b===sk);
-    const dimmed=sk&&!highlighted;
-    const alpha=dimmed?0.12:highlighted?1:0.7;
-
-    // Center of each card
-    const cax=pa.x+NW/2, cay=pa.y+NH/2;
-    const cbx=pb.x+NW/2, cby=pb.y+NH/2;
-
-    ctx.save();
-    ctx.globalAlpha=alpha;
-    ctx.beginPath();
-    ctx.moveTo(cax,cay);
-    ctx.lineTo(cbx,cby);
-    ctx.strokeStyle=r.color;
-    ctx.lineWidth=(highlighted?r.w+1:r.w)/scale*1.4;
-    if(r.dash) ctx.setLineDash([9/scale,5/scale]);
-    else ctx.setLineDash([]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // ALWAYS draw link label (visible without click)
-    const mx=(cax+cbx)/2, my=(cay+cby)/2;
-    const fontSize=Math.max(10,11/scale);
-    ctx.font=`700 ${fontSize}px 'IBM Plex Sans', sans-serif`;
+    const hi=sk&&(l.a===sk||l.b===sk);
+    const dim=sk&&!hi;
+    const alpha=dim?0.1:hi?1:0.65;
+    const cax=pa.x+NW/2,cay=pa.y+NH/2,cbx=pb.x+NW/2,cby=pb.y+NH/2;
+    ctx.save();ctx.globalAlpha=alpha;
+    ctx.beginPath();ctx.moveTo(cax,cay);ctx.lineTo(cbx,cby);
+    ctx.strokeStyle=r.color;ctx.lineWidth=(hi?r.w+1:r.w)/scale*1.4;
+    if(r.dash)ctx.setLineDash([9/scale,5/scale]);else ctx.setLineDash([]);
+    ctx.stroke();ctx.setLineDash([]);
+    // Label always visible
+    const mx=(cax+cbx)/2,my=(cay+cby)/2;
+    const fs=Math.max(9,10.5/scale);
+    ctx.font=`700 ${fs}px 'IBM Plex Sans',sans-serif`;
     const tw=ctx.measureText(r.label).width;
-    const pw=tw+14, ph=fontSize+10;
-    const px=mx-pw/2, py=my-ph/2;
+    const pw=tw+14,ph=fs+10,px=mx-pw/2,py=my-ph/2;
     drawRR(ctx,px,py,pw,ph,ph/2);
     ctx.fillStyle=r.bg;ctx.fill();
     ctx.strokeStyle=r.color;ctx.lineWidth=1/scale;ctx.stroke();
     ctx.fillStyle=r.tc;ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(r.label,mx,my+0.5);
-
-    // Arrow tip
-    const angle=Math.atan2(cby-cay,cbx-cax);
-    const arrowLen=12/scale;
+    // Arrow
+    const ang=Math.atan2(cby-cay,cbx-cax);const al=12/scale;
     ctx.beginPath();
-    ctx.moveTo(cbx-Math.cos(angle)*arrowLen, cby-Math.sin(angle)*arrowLen);
-    ctx.lineTo(cbx-Math.cos(angle+0.4)*arrowLen*0.6, cby-Math.sin(angle+0.4)*arrowLen*0.6);
-    ctx.moveTo(cbx-Math.cos(angle)*arrowLen, cby-Math.sin(angle)*arrowLen);
-    ctx.lineTo(cbx-Math.cos(angle-0.4)*arrowLen*0.6, cby-Math.sin(angle-0.4)*arrowLen*0.6);
-    ctx.strokeStyle=r.color;ctx.lineWidth=(r.w*0.8)/scale;ctx.stroke();
-
+    ctx.moveTo(cbx-Math.cos(ang)*al,cby-Math.sin(ang)*al);
+    ctx.lineTo(cbx-Math.cos(ang+0.4)*al*0.6,cby-Math.sin(ang+0.4)*al*0.6);
+    ctx.moveTo(cbx-Math.cos(ang)*al,cby-Math.sin(ang)*al);
+    ctx.lineTo(cbx-Math.cos(ang-0.4)*al*0.6,cby-Math.sin(ang-0.4)*al*0.6);
+    ctx.strokeStyle=r.color;ctx.lineWidth=r.w*0.8/scale;ctx.stroke();
     ctx.restore();
   });
 
-  // ── DRAW NODES (Cards) ──
+  // ── NODES ──
   nodes.forEach(n=>{
-    const k=nk(n.id); const p=pos[k]; if(!p)return;
+    const k=nk(n.id);const p=pos[k];if(!p)return;
     const isSel=n.id===sel;
     const isConn=sk&&links.some(l=>(l.a===sk&&l.b===k)||(l.b===sk&&l.a===k));
-    const dimmed=sk&&!isSel&&!isConn;
+    const dim=sk&&!isSel&&!isConn;
     const m=TMETA[n.type]||TMETA.emp;
     const imgObj=imgCache[n.id];
-    const cx=p.x, cy=p.y;
-    const alpha=dimmed?0.25:1;
+    const cx=p.x,cy=p.y;
+    ctx.save();ctx.globalAlpha=dim?0.22:1;
 
-    ctx.save();
-    ctx.globalAlpha=alpha;
-
-    // Selection glow
+    // Glow
     if(isSel){
-      ctx.beginPath();
-      drawRR(ctx,cx-6,cy-6,NW+12,NH+12,NRX+4);
-      ctx.strokeStyle=m.ring; ctx.lineWidth=3/scale; ctx.stroke();
-      ctx.fillStyle=m.ring+'22'; ctx.fill();
+      drawRR(ctx,cx-6,cy-6,NW+12,NH+12,CARD.rx+4);
+      ctx.strokeStyle=m.ring;ctx.lineWidth=3/scale;ctx.stroke();
+      ctx.fillStyle=m.ring+'22';ctx.fill();
     }
+    // Card
+    drawRR(ctx,cx,cy,NW,NH,CARD.rx);
+    ctx.fillStyle=m.bg;ctx.fill();
+    ctx.strokeStyle=m.border;ctx.lineWidth=(isSel?2.5:1.5)/scale;ctx.stroke();
 
-    // Card background
-    drawRR(ctx,cx,cy,NW,NH,NRX);
-    ctx.fillStyle=m.bg; ctx.fill();
-    ctx.strokeStyle=m.border; ctx.lineWidth=(isSel?2.5:1.5)/scale; ctx.stroke();
-
-    // Photo / initials
-    const ps=CARD.photoSize;
-    const px=cx+(NW-ps)/2, py=cy+8;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(px+ps/2,py+ps/2,ps/2,0,Math.PI*2);
-    ctx.clip();
-    if(imgObj){
-      ctx.drawImage(imgObj,px,py,ps,ps);
-    } else {
+    // Photo
+    const ps=CARD.photoSize;const px=cx+(NW-ps)/2,py=cy+8;
+    ctx.save();ctx.beginPath();ctx.arc(px+ps/2,py+ps/2,ps/2,0,Math.PI*2);ctx.clip();
+    if(imgObj){ctx.drawImage(imgObj,px,py,ps,ps);}
+    else{
       ctx.fillStyle=m.bg;ctx.fill();
-      const fsz=Math.max(16,ps*0.4);
-      ctx.font=`700 ${fsz}px 'IBM Plex Sans',sans-serif`;
-      ctx.fillStyle=m.tc; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.font=`700 ${Math.max(14,ps*0.38)}px 'IBM Plex Sans',sans-serif`;
+      ctx.fillStyle=m.tc;ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.fillText(ini(n.name),px+ps/2,py+ps/2+1);
     }
     ctx.restore();
+    // Risk ring
+    ctx.beginPath();ctx.arc(px+ps/2,py+ps/2,ps/2+2.5/scale,0,Math.PI*2);
+    ctx.strokeStyle=rc(n.risk);ctx.lineWidth=2.5/scale;ctx.stroke();
 
-    // Ring around photo (risk color)
-    ctx.beginPath();
-    ctx.arc(px+ps/2,py+ps/2,ps/2+2/scale,0,Math.PI*2);
-    ctx.strokeStyle=rc(n.risk); ctx.lineWidth=2.5/scale; ctx.stroke();
-
-    // Name inside card
+    // Name in card
     const nameLine=cy+ps+14;
     const displayName=n.name.length>18?n.name.substring(0,17)+'…':n.name;
-    const fs=Math.max(9.5,11/scale);
+    const fs=Math.max(9,11/scale);
     ctx.font=`600 ${fs}px 'IBM Plex Sans',sans-serif`;
-    ctx.fillStyle=m.tc; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle=m.tc;ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(displayName,cx+NW/2,nameLine);
-
-    // Type label inside card
-    ctx.font=`400 ${Math.max(7.5,9/scale)}px 'IBM Plex Sans',sans-serif`;
+    ctx.font=`400 ${Math.max(7,8.5/scale)}px 'IBM Plex Sans',sans-serif`;
     ctx.fillStyle=m.tc+'99';
-    ctx.fillText(m.label,cx+NW/2,nameLine+13/scale);
+    ctx.fillText(m.label,cx+NW/2,nameLine+12/scale);
 
-    // ── INFO BLOCK BELOW CARD (always visible) ──
+    // ── INFO BLOCK ──
     let infoY=cy+NH+4;
-    const infoX=cx;
-    const infoW=NW;
-
-    // Background for info block
     const infoLines=[];
-    if(n.info) infoLines.push({text:n.info, color:m.tc+'cc'});
-    if(n.cedula) infoLines.push({text:'ID: '+n.cedula, color:'#94a3b8', mono:true});
-    const rInfo=RISK[n.risk];
-    if(rInfo) infoLines.push({text:'● '+rInfo.label, color:rInfo.color, bold:true});
-
+    if(n.info)    infoLines.push({text:n.info,         color:m.tc+'cc'});
+    if(n.cedula)  infoLines.push({text:'ID: '+n.cedula, color:'#94a3b8', mono:true});
+    if(RISK[n.risk]) infoLines.push({text:'● '+RISK[n.risk].label, color:rc(n.risk), bold:true});
     if(infoLines.length){
-      const lineH=14/scale;
-      const totalInfoH=infoLines.length*lineH+10/scale;
-      drawRR(ctx,infoX,infoY,infoW,totalInfoH,5);
-      ctx.fillStyle='rgba(15,17,23,0.85)';ctx.fill();
-      ctx.strokeStyle=m.border+'66';ctx.lineWidth=0.8/scale;ctx.stroke();
-
+      const lineH=14/scale, totalH=infoLines.length*lineH+10/scale;
+      drawRR(ctx,cx,infoY,NW,totalH,5);
+      ctx.fillStyle='rgba(15,17,23,0.88)';ctx.fill();
+      ctx.strokeStyle=m.border+'55';ctx.lineWidth=0.8/scale;ctx.stroke();
       infoLines.forEach((il,idx)=>{
-        const textY=infoY+6/scale+(idx+0.5)*lineH;
+        const ty=infoY+6/scale+(idx+0.5)*lineH;
         const ifs=Math.max(7,9/scale);
-        ctx.font=`${il.bold?'700':il.mono?'500 IBM Plex Mono,':'400'} ${ifs}px 'IBM Plex Sans',sans-serif`;
-        ctx.fillStyle=il.color;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        // Truncate
+        ctx.font=`${il.bold?'700':il.mono?'500':'400'} ${ifs}px '${il.mono?'IBM Plex Mono':'IBM Plex Sans'}',sans-serif`;
+        ctx.fillStyle=il.color;ctx.textAlign='center';ctx.textBaseline='middle';
         let txt=il.text;
-        while(ctx.measureText(txt).width>infoW-10/scale&&txt.length>3) txt=txt.slice(0,-2)+'…';
-        ctx.fillText(txt,cx+NW/2,textY);
+        while(ctx.measureText(txt).width>NW-10/scale&&txt.length>3)txt=txt.slice(0,-2)+'…';
+        ctx.fillText(txt,cx+NW/2,ty);
       });
-      infoY += totalInfoH + 3/scale;
+      infoY+=totalH+3/scale;
     }
 
-    // ── NOTES / CONTEXT BLOCK (always visible, post-it style) ──
-    if(n.notes && n.notes.trim()){
-      const noteFontSize=Math.max(7.5,9.5/scale);
-      ctx.font=`400 ${noteFontSize}px 'IBM Plex Sans',sans-serif`;
-      const maxTextW=infoW-16/scale;
-      // Word-wrap
+    // ── NOTES BLOCK ──
+    if(n.notes&&n.notes.trim()){
+      const nfs=Math.max(7.5,9.5/scale);
+      ctx.font=`400 ${nfs}px 'IBM Plex Sans',sans-serif`;
+      const maxW=NW-16/scale;
       const words=n.notes.trim().split(' ');
-      const noteLines=[];
-      let cur='';
+      const nlines=[];let cur='';
       words.forEach(w=>{
         const test=cur?cur+' '+w:w;
-        if(ctx.measureText(test).width>maxTextW&&cur){ noteLines.push(cur); cur=w; }
+        if(ctx.measureText(test).width>maxW&&cur){nlines.push(cur);cur=w;}
         else cur=test;
       });
-      if(cur) noteLines.push(cur);
-      // Cap at 4 lines
-      if(noteLines.length>4){ noteLines.splice(4); noteLines[3]=noteLines[3].replace(/\s*\S+$/,'')+'…'; }
-      const noteLineH=noteFontSize+4/scale;
-      const noteH=noteLines.length*noteLineH+14/scale;
-      const noteX=cx, noteY=infoY;
-
-      // Post-it background (amber tint)
-      drawRR(ctx,noteX,noteY,infoW,noteH,5);
-      ctx.fillStyle='rgba(30,22,5,0.92)';ctx.fill();
+      if(cur)nlines.push(cur);
+      if(nlines.length>4){nlines.splice(4);nlines[3]=nlines[3].replace(/\s*\S+$/,'')+'…';}
+      const nlH=nfs+4/scale,noteH=nlines.length*nlH+14/scale;
+      drawRR(ctx,cx,infoY,NW,noteH,5);
+      ctx.fillStyle='rgba(30,22,5,0.93)';ctx.fill();
       ctx.strokeStyle='#d97706';ctx.lineWidth=1/scale;ctx.stroke();
-
-      // Left accent bar
-      ctx.fillStyle='#d97706';
-      ctx.fillRect(noteX,noteY,3/scale,noteH);
-
-      // "NOTA" label
+      ctx.fillStyle='#d97706';ctx.fillRect(cx,infoY,3/scale,noteH);
       ctx.font=`700 ${Math.max(6,7.5/scale)}px 'IBM Plex Mono',monospace`;
-      ctx.fillStyle='#d97706';
-      ctx.textAlign='left';ctx.textBaseline='top';
-      ctx.fillText('NOTA',noteX+8/scale,noteY+5/scale);
-
-      // Note text lines
-      ctx.font=`400 ${noteFontSize}px 'IBM Plex Sans',sans-serif`;
+      ctx.fillStyle='#d97706';ctx.textAlign='left';ctx.textBaseline='top';
+      ctx.fillText('NOTA',cx+8/scale,infoY+5/scale);
+      ctx.font=`400 ${nfs}px 'IBM Plex Sans',sans-serif`;
       ctx.fillStyle='#fde68a';
-      ctx.textAlign='left';ctx.textBaseline='top';
-      noteLines.forEach((line,i)=>{
-        ctx.fillText(line, noteX+8/scale, noteY+13/scale+i*noteLineH);
-      });
+      nlines.forEach((line,i)=>{ctx.fillText(line,cx+8/scale,infoY+13/scale+i*nlH);});
     }
 
-    // "CASO CENTRAL" tag if selected
+    // CASO CENTRAL tag
     if(isSel){
-      const tagW=90/scale, tagH=16/scale;
-      const tagX=cx+(NW-tagW)/2, tagY=cy-tagH-6/scale;
-      drawRR(ctx,tagX,tagY,tagW,tagH,tagH/2);
-      ctx.fillStyle=m.ring; ctx.fill();
+      const tw=90/scale,th=16/scale,tx=cx+(NW-tw)/2,ty=cy-th-6/scale;
+      drawRR(ctx,tx,ty,tw,th,th/2);
+      ctx.fillStyle=m.ring;ctx.fill();
       ctx.font=`700 ${Math.max(7,9/scale)}px 'IBM Plex Sans',sans-serif`;
-      ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('CASO CENTRAL',cx+NW/2,tagY+tagH/2);
+      ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('CASO CENTRAL',cx+NW/2,ty+th/2);
     }
-
     ctx.restore();
   });
-
-  ctx.textBaseline='alphabetic';
-  ctx.restore();
-
-  // Draw minimap after main graph
+  ctx.textBaseline='alphabetic';ctx.restore();
   drawMinimap();
 }
 
-/* ═══════════════ MINIMAP ═══════════════ */
+/* ══════════════════════════════════════════════
+   MINIMAP
+══════════════════════════════════════════════ */
 function drawMinimap(){
   const mm=document.getElementById('mm-cv');
-  if(!mm||!nodes.length) return;
+  if(!mm||!nodes.length)return;
   const dpr=window.devicePixelRatio||1;
-  const MW=mm.offsetWidth||160, MH=mm.offsetHeight||100;
-  mm.width=MW*dpr; mm.height=MH*dpr;
-  const ctx=mm.getContext('2d');
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,MW,MH);
-
-  // World bounds
+  const MW=mm.offsetWidth||160,MH=mm.offsetHeight||100;
+  mm.width=MW*dpr;mm.height=MH*dpr;
+  const ctx=mm.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,MW,MH);
   let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  nodes.forEach(n=>{ const p=pos[nk(n.id)]; if(!p)return;
-    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
-    maxX=Math.max(maxX,p.x+CARD.w); maxY=Math.max(maxY,p.y+CARD.h+80);
+  nodes.forEach(n=>{const p=pos[nk(n.id)];if(!p)return;
+    minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);
+    maxX=Math.max(maxX,p.x+CARD.w);maxY=Math.max(maxY,p.y+CARD.h+80);
   });
-  if(minX===Infinity) return;
-  const pad=20;
-  const ww=maxX-minX+pad*2, wh=maxY-minY+pad*2;
+  if(minX===Infinity)return;
+  const pad=10,ww=maxX-minX+pad*2,wh=maxY-minY+pad*2;
   const ms=Math.min((MW-4)/ww,(MH-4)/wh);
-  const mox=2-(minX-pad)*ms, moy=2-(minY-pad)*ms;
-
-  // Draw links
+  const mox=2-(minX-pad)*ms,moy=2-(minY-pad)*ms;
   links.forEach(l=>{
-    const pa=pos[l.a], pb=pos[l.b]; if(!pa||!pb)return;
+    const pa=pos[l.a],pb=pos[l.b];if(!pa||!pb)return;
     const r=REL[l.type]||REL.otro;
     ctx.beginPath();
-    ctx.moveTo(pa.x*ms+mox+CARD.w/2*ms, pa.y*ms+moy+CARD.h/2*ms);
-    ctx.lineTo(pb.x*ms+mox+CARD.w/2*ms, pb.y*ms+moy+CARD.h/2*ms);
-    ctx.strokeStyle=r.color+'88'; ctx.lineWidth=1; ctx.stroke();
+    ctx.moveTo(pa.x*ms+mox+CARD.w/2*ms,pa.y*ms+moy+CARD.h/2*ms);
+    ctx.lineTo(pb.x*ms+mox+CARD.w/2*ms,pb.y*ms+moy+CARD.h/2*ms);
+    ctx.strokeStyle=r.color+'77';ctx.lineWidth=1;ctx.stroke();
   });
-
-  // Draw nodes as small dots
   nodes.forEach(n=>{
-    const p=pos[nk(n.id)]; if(!p)return;
+    const p=pos[nk(n.id)];if(!p)return;
     const m=TMETA[n.type]||TMETA.emp;
-    const nx=p.x*ms+mox, ny=p.y*ms+moy;
-    const nw=CARD.w*ms, nh=CARD.h*ms;
-    ctx.fillStyle=m.bg;
-    ctx.strokeStyle=n.id===sel?m.ring:m.border;
+    const nx=p.x*ms+mox,ny=p.y*ms+moy,nw=CARD.w*ms,nh=CARD.h*ms;
+    ctx.fillStyle=m.bg;ctx.strokeStyle=n.id===sel?m.ring:m.border;
     ctx.lineWidth=n.id===sel?1.5:0.8;
-    ctx.beginPath(); ctx.rect(nx,ny,nw,nh); ctx.fill(); ctx.stroke();
-    // Risk dot
-    ctx.beginPath(); ctx.arc(nx+nw-3,ny+3,2.5,0,Math.PI*2);
-    ctx.fillStyle=rc(n.risk); ctx.fill();
+    ctx.beginPath();ctx.rect(nx,ny,nw,nh);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(nx+nw-3,ny+3,2.5,0,Math.PI*2);
+    ctx.fillStyle=rc(n.risk);ctx.fill();
   });
-
-  // Viewport rectangle
   const cw=document.getElementById('canvas-wrap');
-  const VW=cw.offsetWidth, VH=cw.offsetHeight;
-  const vx=(-offsetX/scale)*ms+mox, vy=(-offsetY/scale)*ms+moy;
-  const vw=(VW/scale)*ms, vh=(VH/scale)*ms;
-  ctx.strokeStyle='#60a5fa'; ctx.lineWidth=1.5;
-  ctx.setLineDash([3,2]);
+  const VW=cw.offsetWidth,VH=cw.offsetHeight;
+  const vx=(-offsetX/scale)*ms+mox,vy=(-offsetY/scale)*ms+moy;
+  const vw=(VW/scale)*ms,vh=(VH/scale)*ms;
+  ctx.strokeStyle='#60a5fa';ctx.lineWidth=1.5;ctx.setLineDash([3,2]);
   ctx.strokeRect(Math.max(0,vx),Math.max(0,vy),Math.min(MW-vx,vw),Math.min(MH-vy,vh));
   ctx.setLineDash([]);
 }
-const cv=document.getElementById('cv');
 
-function getCanvasXY(e){
+/* ══════════════════════════════════════════════
+   CANVAS EVENTS
+══════════════════════════════════════════════ */
+const cv = document.getElementById('cv');
+function getXY(e){
   const r=cv.getBoundingClientRect();
-  const cl=e.touches?e.touches[0]:e;
-  return {x:cl.clientX-r.left, y:cl.clientY-r.top};
+  const c=e.touches?e.touches[0]:e;
+  return{x:c.clientX-r.left,y:c.clientY-r.top};
 }
 function hitTest(sx,sy){
   const w=screenToWorld(sx,sy);
   for(let i=nodes.length-1;i>=0;i--){
-    const n=nodes[i]; const k=nk(n.id); const p=pos[k]; if(!p) continue;
-    if(w.x>=p.x&&w.x<=p.x+CARD.w&&w.y>=p.y&&w.y<=p.y+CARD.h+60) return k;
+    const n=nodes[i];const k=nk(n.id);const p=pos[k];if(!p)continue;
+    if(w.x>=p.x&&w.x<=p.x+CARD.w&&w.y>=p.y&&w.y<=p.y+CARD.h+60)return k;
   }
   return null;
 }
-
 cv.addEventListener('mousedown',e=>{
-  const {x,y}=getCanvasXY(e);
-  const hit=hitTest(x,y);
-  if(hit){ drag=hit; dragStart={x,y}; dragMoved=false; }
-  else { isPanning=true; panStart={x,y,ox:offsetX,oy:offsetY}; }
+  const {x,y}=getXY(e);const hit=hitTest(x,y);
+  if(hit){drag=hit;dragStart={x,y};dragMoved=false;}
+  else{isPanning=true;panStart={x,y,ox:offsetX,oy:offsetY};}
 });
 cv.addEventListener('mousemove',e=>{
   if(drag){
-    const {x,y}=getCanvasXY(e);
-    if(Math.hypot(x-dragStart.x,y-dragStart.y)>4) dragMoved=true;
-    if(dragMoved){ const w=screenToWorld(x,y); pos[drag]={x:w.x-CARD.w/2, y:w.y-CARD.h/2}; drawGraph(); }
-  } else if(isPanning&&panStart){
-    const {x,y}=getCanvasXY(e);
-    offsetX=panStart.ox+(x-panStart.x); offsetY=panStart.oy+(y-panStart.y); drawGraph();
+    const{x,y}=getXY(e);
+    if(Math.hypot(x-dragStart.x,y-dragStart.y)>4)dragMoved=true;
+    if(dragMoved){const w=screenToWorld(x,y);pos[drag]={x:w.x-CARD.w/2,y:w.y-CARD.h/2};drawGraph();}
+  }else if(isPanning&&panStart){
+    const{x,y}=getXY(e);offsetX=panStart.ox+(x-panStart.x);offsetY=panStart.oy+(y-panStart.y);drawGraph();
   }
 });
 cv.addEventListener('mouseup',e=>{
-  if(drag){ if(!dragMoved){ const id=parseInt(drag.replace('n','')); selectNode(id); } drag=null; dragMoved=false; }
-  isPanning=false; panStart=null;
+  if(drag){if(!dragMoved){const id=parseInt(drag.replace('n',''));selectNode(id);}drag=null;dragMoved=false;}
+  isPanning=false;panStart=null;
 });
-cv.addEventListener('mouseleave',()=>{ drag=null; isPanning=false; panStart=null; });
+cv.addEventListener('mouseleave',()=>{drag=null;isPanning=false;panStart=null;});
 cv.addEventListener('wheel',e=>{
   e.preventDefault();
-  const {x,y}=getCanvasXY(e);
-  const wBefore=screenToWorld(x,y);
-  const factor=e.deltaY<0?1.1:0.91;
-  scale=Math.max(0.2,Math.min(3,scale*factor));
-  const wAfter=screenToWorld(x,y);
-  offsetX+=( wAfter.x-wBefore.x)*scale; offsetY+=(wAfter.y-wBefore.y)*scale;
-  drawGraph();
+  const{x,y}=getXY(e);
+  const wx=(x-offsetX)/scale,wy=(y-offsetY)/scale;
+  const f=e.deltaY<0?1.1:0.91;
+  scale=Math.max(0.08,Math.min(4,scale*f));
+  offsetX=x-wx*scale;offsetY=y-wy*scale;
+  updateZoomLabel();drawGraph();
 },{passive:false});
-
-// Touch drag
 cv.addEventListener('touchstart',e=>{
   if(e.touches.length===1){
-    const {x,y}=getCanvasXY(e);
-    const hit=hitTest(x,y);
-    if(hit){ drag=hit; dragStart={x,y}; dragMoved=false; e.preventDefault(); }
-    else { isPanning=true; panStart={x,y,ox:offsetX,oy:offsetY}; }
+    const{x,y}=getXY(e);const hit=hitTest(x,y);
+    if(hit){drag=hit;dragStart={x,y};dragMoved=false;e.preventDefault();}
+    else{isPanning=true;panStart={x,y,ox:offsetX,oy:offsetY};}
   }
 },{passive:false});
 cv.addEventListener('touchmove',e=>{
   if(drag&&e.touches.length===1){
-    const {x,y}=getCanvasXY(e);
-    if(Math.hypot(x-dragStart.x,y-dragStart.y)>6) dragMoved=true;
-    if(dragMoved){ const w=screenToWorld(x,y); pos[drag]={x:w.x-CARD.w/2,y:w.y-CARD.h/2}; drawGraph(); }
+    const{x,y}=getXY(e);
+    if(Math.hypot(x-dragStart.x,y-dragStart.y)>6)dragMoved=true;
+    if(dragMoved){const w=screenToWorld(x,y);pos[drag]={x:w.x-CARD.w/2,y:w.y-CARD.h/2};drawGraph();}
     e.preventDefault();
-  } else if(isPanning&&panStart&&e.touches.length===1){
-    const {x,y}=getCanvasXY(e);
-    offsetX=panStart.ox+(x-panStart.x); offsetY=panStart.oy+(y-panStart.y); drawGraph();
-    e.preventDefault();
+  }else if(isPanning&&panStart){
+    const{x,y}=getXY(e);offsetX=panStart.ox+(x-panStart.x);offsetY=panStart.oy+(y-panStart.y);drawGraph();e.preventDefault();
   }
 },{passive:false});
 cv.addEventListener('touchend',e=>{
-  if(drag){ if(!dragMoved){ const id=parseInt(drag.replace('n','')); selectNode(id); } drag=null; }
-  isPanning=false; panStart=null;
+  if(drag){if(!dragMoved){const id=parseInt(drag.replace('n',''));selectNode(id);}drag=null;}
+  isPanning=false;panStart=null;
 });
 
-/* ═══════════════ MODAL ═══════════════ */
-function openModal(type,editId){
+// Minimap click
+document.getElementById('minimap').addEventListener('click',e=>{
+  if(!nodes.length)return;
+  const mm=document.getElementById('minimap');const r=mm.getBoundingClientRect();
+  const mx=e.clientX-r.left,my=e.clientY-r.top,MW=mm.offsetWidth,MH=mm.offsetHeight;
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  nodes.forEach(n=>{const p=pos[nk(n.id)];if(!p)return;
+    minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);
+    maxX=Math.max(maxX,p.x+CARD.w);maxY=Math.max(maxY,p.y+CARD.h+80);
+  });
+  if(minX===Infinity)return;
+  const pad=10,ww=maxX-minX+pad*2,wh=maxY-minY+pad*2;
+  const ms=Math.min((MW-4)/ww,(MH-4)/wh);
+  const mox=2-(minX-pad)*ms,moy=2-(minY-pad)*ms;
+  const wx=(mx-mox)/ms,wy=(my-moy)/ms;
+  const cw=document.getElementById('canvas-wrap');
+  offsetX=cw.offsetWidth/2-wx*scale;offsetY=cw.offsetHeight/2-wy*scale;
+  drawGraph();
+});
+
+/* ══════════════════════════════════════════════
+   MODALS — PERSON & LINK
+══════════════════════════════════════════════ */
+function openModal(type, editId){
+  if(!currentCaseId){showToast('Primero selecciona o crea un caso');return;}
   const mc=document.getElementById('modal-container');
   const e=editId!=null?nodes.find(x=>x.id===editId):null;
+
   if(type in FORM_META){
     const fm=FORM_META[type];
-    const colorClass=({emp:'b-emp',fin:'b-fin',fex:'b-fex',ext:'b-ext'})[type]||'b-emp';
-    const extraExt=type==='ext'?`<div><label>Antecedentes / Actividad Delictiva</label><input type="text" id="m-ant" value="${e?e.ant||'':''}" placeholder="Ej: extorsión, narcotráfico..."></div>`:'';
+    const extraExt=type==='ext'?`<div><label>Antecedentes / Actividad</label><input type="text" id="m-ant" value="${e?e.ant||'':''}" placeholder="Ej: extorsión, narcotráfico..."></div>`:'';
     mc.innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">
-      <h3><span style="font-size:16px">${{emp:'🔵',fin:'🟣',fex:'🟢',ext:'🔴'}[type]||'⚫'}</span>${e?'Editar':'Nuevo'} — ${fm.title}</h3>
+      <h3>${{emp:'🔵',fin:'🟣',fex:'🟢',ext:'🔴'}[type]} ${e?'Editar':'Nuevo'} — ${fm.title}</h3>
       <p class="modal-hint">${fm.hint}</p>
       ${e&&e.photo?`<img id="img-preview" src="${e.photo}" class="img-preview" style="display:block">`:`<img id="img-preview" class="img-preview">`}
       <div><label>Foto (opcional)</label><input type="file" id="m-photo" accept="image/*" onchange="previewPhoto(this)"></div>
-      <div><label>Nombre completo *</label><input type="text" id="m-name" value="${e?e.name:''}" placeholder="Nombre y apellido completo"></div>
+      <div><label>Nombre completo *</label><input type="text" id="m-name" value="${e?e.name:''}" placeholder="Nombre y apellido"></div>
       <div><label>${fm.infoLbl}</label><input type="text" id="m-info" value="${e?e.info||'':''}" placeholder="..."></div>
-      <div><label>Cédula / ID</label><input type="text" id="m-cedula" value="${e?e.cedula||'':''}" placeholder="Número de identificación"></div>
-      <div><label>Nivel de Riesgo</label><select id="m-risk">
+      <div><label>Cédula / ID</label><input type="text" id="m-cedula" value="${e?e.cedula||'':''}" placeholder="Opcional"></div>
+      <div><label>Nivel de riesgo</label><select id="m-risk">
         <option value="low"${e?.risk==='low'?' selected':''}>🟢 Bajo</option>
         <option value="med"${e?.risk==='med'?' selected':''}>🟡 Medio</option>
         <option value="high"${e?.risk==='high'?' selected':''}>🔴 Alto</option>
       </select></div>
       ${extraExt}
-      <div><label>Notas del Caso</label><textarea id="m-notes">${e?e.notes||'':''}</textarea></div>
+      <div><label>Notas del caso</label><textarea id="m-notes">${e?e.notes||'':''}</textarea></div>
       <div class="modal-btns">
         ${e?`<button class="b-danger" onclick="deleteNode(${e.id})">🗑 Eliminar</button>`:''}
         <button onclick="closeModal()">Cancelar</button>
-        <button class="${colorClass}" onclick="saveNode('${type}',${e?e.id:'null'})">${e?'Guardar cambios':'Agregar'}</button>
+        <button class="${fm.btn}" onclick="saveNode('${type}',${e?e.id:'null'})">${e?'Guardar':'Agregar'}</button>
       </div>
     </div></div>`;
     window._editPhoto=e?.photo||null;
+    setTimeout(()=>document.getElementById('m-name')?.focus(),80);
+
   } else if(type==='lnk'){
-    if(nodes.length<2){ showToast('Necesitas al menos 2 personas'); return; }
-    const opts=nodes.map(n=>`<option value="${nk(n.id)}">${n.name} (${TMETA[n.type]?.label||''})</option>`).join('');
+    if(nodes.length<2){showToast('Necesitas al menos 2 personas');return;}
+    const opts=nodes.map(n=>`<option value="${nk(n.id)}">${n.name} — ${TMETA[n.type]?.label||''}</option>`).join('');
     const preA=sel!==null?nk(sel):'';
     mc.innerHTML=`<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">
       <h3>⬡ Registrar Vínculo</h3>
       <div><label>Persona A *</label><select id="m-ea">${opts}</select></div>
-      <div><label>Tipo de Relación *</label><select id="m-type">
+      <div><label>Tipo de relación *</label><select id="m-type">
         <option value="conyuge">💜 Cónyuge / Pareja</option>
         <option value="hijo">💚 Hijo / Padre</option>
         <option value="hermano">🟡 Hermano/a</option>
@@ -1100,23 +1087,32 @@ function openModal(type,editId){
         <option value="otro">⬛ Otro</option>
       </select></div>
       <div><label>Persona B *</label><select id="m-eb">${opts}</select></div>
-      <div><label>Notas del vínculo</label><input type="text" id="m-lnotes" placeholder="Observaciones adicionales..."></div>
-      <div class="modal-btns"><button onclick="closeModal()">Cancelar</button><button class="b-lnk" onclick="saveLink()">Registrar vínculo</button></div>
+      <div><label>Notas</label><input type="text" id="m-lnotes" placeholder="Observaciones opcionales..."></div>
+      <div class="modal-btns"><button onclick="closeModal()">Cancelar</button><button class="b-lnk" onclick="saveLink()">Registrar</button></div>
     </div></div>`;
-    if(preA){ setTimeout(()=>{ const el=document.getElementById('m-ea'); if(el)el.value=preA; },10); }
+    if(preA)setTimeout(()=>{const el=document.getElementById('m-ea');if(el)el.value=preA;},10);
   }
 }
+
 function previewPhoto(input){
-  const file=input.files[0]; if(!file)return;
+  const file=input.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=ev=>{ window._editPhoto=ev.target.result; const prev=document.getElementById('img-preview'); if(prev){prev.src=ev.target.result;prev.style.display='block';} };
+  reader.onload=ev=>{
+    window._editPhoto=ev.target.result;
+    const prev=document.getElementById('img-preview');
+    if(prev){prev.src=ev.target.result;prev.style.display='block';}
+  };
   reader.readAsDataURL(file);
 }
-function closeModal(){ document.getElementById('modal-container').innerHTML=''; window._editPhoto=null; }
+
+function closeModal(){
+  document.getElementById('modal-container').innerHTML='';
+  window._editPhoto=null;
+}
 
 function saveNode(type,id){
   const name=document.getElementById('m-name').value.trim();
-  if(!name){ showToast('El nombre es obligatorio'); return; }
+  if(!name){showToast('El nombre es obligatorio');return;}
   const info=document.getElementById('m-info').value.trim();
   const cedula=document.getElementById('m-cedula').value.trim();
   const risk=document.getElementById('m-risk').value;
@@ -1125,86 +1121,64 @@ function saveNode(type,id){
   const photo=window._editPhoto||null;
   if(id!==null&&id!=='null'){
     const n=nodes.find(x=>x.id===id);
-    if(n){ Object.assign(n,{name,type,info,cedula,risk,notes,ant}); if(photo!==null){ n.photo=photo; delete imgCache[id]; if(photo){ const img=new Image(); img.onload=()=>{imgCache[id]=img;drawGraph();}; img.src=photo; } } }
-    showToast('Persona actualizada ✓');
-  } else {
+    if(n){
+      Object.assign(n,{name,type,info,cedula,risk,notes,ant});
+      if(photo!==null){n.photo=photo;delete imgCache[id];if(photo){const img=new Image();img.onload=()=>{imgCache[id]=img;drawGraph();};img.src=photo;}}
+    }
+    showToast('Actualizado ✓');
+  }else{
     const newId=nextId++;
     nodes.push({id:newId,name,type,info,cedula,risk,notes,ant,photo:photo||null});
     if(!pos[nk(newId)]){
       const cw=document.getElementById('canvas-wrap');
-      const cx=(cw.offsetWidth/2-offsetX)/scale-CARD.w/2;
-      const cy=(cw.offsetHeight/2-offsetY)/scale-CARD.h/2;
-      pos[nk(newId)]={x:cx+(Math.random()-.5)*200, y:cy+(Math.random()-.5)*150};
+      pos[nk(newId)]={x:(cw.offsetWidth/2-offsetX)/scale-CARD.w/2+(Math.random()-.5)*200,
+                       y:(cw.offsetHeight/2-offsetY)/scale-CARD.h/2+(Math.random()-.5)*150};
     }
-    if(photo){ const img=new Image(); img.onload=()=>{imgCache[newId]=img;drawGraph();}; img.src=photo; }
+    if(photo){const img=new Image();img.onload=()=>{imgCache[newId]=img;drawGraph();};img.src=photo;}
     showToast('Persona agregada ✓');
   }
-  closeModal(); persist(); updateStats(); renderSidebar(); drawGraph();
-  if(id&&sel===id) updateDetail(id);
+  closeModal();persist();updateStats();renderSidebar();drawGraph();
+  if(id&&sel===id)updateDetail(id);
 }
+
 function deleteNode(id){
   const k=nk(id);
   nodes=nodes.filter(n=>n.id!==id);
   links=links.filter(l=>l.a!==k&&l.b!==k);
-  delete pos[k]; delete imgCache[id];
-  if(sel===id){ sel=null; updateDetail(null); }
-  closeModal(); persist(); updateStats(); renderSidebar(); drawGraph(); showToast('Eliminado');
+  delete pos[k];delete imgCache[id];
+  if(sel===id){sel=null;updateDetail(null);}
+  closeModal();persist();updateStats();renderSidebar();drawGraph();showToast('Eliminado');
 }
+
 function saveLink(){
   const a=document.getElementById('m-ea').value;
   const b=document.getElementById('m-eb').value;
   const type=document.getElementById('m-type').value;
-  if(a===b){ showToast('Selecciona dos personas distintas'); return; }
-  if(links.find(l=>(l.a===a&&l.b===b)||(l.a===b&&l.b===a))){ showToast('Ese vínculo ya existe'); return; }
+  if(a===b){showToast('Selecciona dos personas distintas');return;}
+  if(links.find(l=>(l.a===a&&l.b===b)||(l.a===b&&l.b===a))){showToast('Ese vínculo ya existe');return;}
   links.push({a,b,type,notes:document.getElementById('m-lnotes').value.trim()});
-  closeModal(); persist(); updateStats();
-  if(sel!==null) updateDetail(sel);
-  drawGraph(); showToast('Vínculo registrado ✓');
+  closeModal();persist();updateStats();
+  if(sel!==null)updateDetail(sel);
+  drawGraph();showToast('Vínculo registrado ✓');
 }
 
-/* ═══════════════ TOAST ═══════════════ */
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
-
-/* ═══════════════ RESIZE ═══════════════ */
-function resizeAndLayout(){
+/* ══════════════════════════════════════════════
+   RESIZE
+══════════════════════════════════════════════ */
+function resizeCanvas(){
   const wrap=document.getElementById('canvas-wrap');
+  if(!wrap||wrap.style.display==='none')return;
   cv.style.width=wrap.offsetWidth+'px';
   cv.style.height=wrap.offsetHeight+'px';
   const mm=document.getElementById('mm-cv');
-  if(mm){ const mw=document.getElementById('minimap'); mm.style.width=mw.offsetWidth+'px'; mm.style.height=mw.offsetHeight+'px'; }
-  if(!Object.keys(pos).length&&nodes.length){ autoLayout(); fitAll(); }
-  else drawGraph();
-  updateZoomLabel();
-}
-
-/* ═══════════════ MINIMAP CLICK TO NAVIGATE ═══════════════ */
-document.getElementById('minimap').addEventListener('click',e=>{
-  if(!nodes.length) return;
-  const mm=document.getElementById('minimap');
-  const r=mm.getBoundingClientRect();
-  const mx=e.clientX-r.left, my=e.clientY-r.top;
-  const MW=mm.offsetWidth, MH=mm.offsetHeight;
-  // Compute minimap scale same as drawMinimap
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  nodes.forEach(n=>{ const p=pos[nk(n.id)]; if(!p)return;
-    minX=Math.min(minX,p.x); minY=Math.min(minY,p.y);
-    maxX=Math.max(maxX,p.x+CARD.w); maxY=Math.max(maxY,p.y+CARD.h+80);
-  });
-  if(minX===Infinity) return;
-  const pad=20, ww=maxX-minX+pad*2, wh=maxY-minY+pad*2;
-  const ms=Math.min((MW-4)/ww,(MH-4)/wh);
-  const mox=2-(minX-pad)*ms, moy=2-(minY-pad)*ms;
-  // Click world coord
-  const wx=(mx-mox)/ms, wy=(my-moy)/ms;
-  // Center viewport on that world coord
-  const cw=document.getElementById('canvas-wrap');
-  offsetX=cw.offsetWidth/2-wx*scale;
-  offsetY=cw.offsetHeight/2-wy*scale;
+  const mw=document.getElementById('minimap');
+  if(mm&&mw){mm.style.width=mw.offsetWidth+'px';mm.style.height=mw.offsetHeight+'px';}
   drawGraph();
+}
+window.addEventListener('resize',resizeCanvas);
+window.addEventListener('load',()=>{
+  initCasesListener();
 });
-
-window.addEventListener('resize',resizeAndLayout);
-window.addEventListener('load',()=>{ resizeAndLayout(); load(); });
 </script>
 </body>
 </html>
